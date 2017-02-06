@@ -11,10 +11,10 @@ base = os.getcwd()
     
 try:
     from setuptools import setup
-    setup_kwargs = {'entry_points': {'console_scripts':['pydisalexi=pydisalexi.pydisalexi:main']}}
+    setup_kwargs = {'entry_points': {'console_scripts':['preparepydisalexi=prepare_disalexi.processLandsatLAI:main']}}
 except ImportError:
     from distutils.core import setup
-    setup_kwargs = {'scripts': ['bin/pydisalexi']}
+    setup_kwargs = {'scripts': ['bin/preparepydisalexi']}
     
 from pydisalexi import __version__
 
@@ -88,13 +88,13 @@ subprocess.call(["scons","-c"])
 
 
 setup(
-    name="projectmas",
+    name="projectmaspreprocess",
     version=__version__,
-    description="An open source implementation of DisALEXI",
+    description="prepare data for input to pyDisALEXI",
     author="Mitchell Schull",
     author_email="mitch.schull@noaa.gov",
-    url="https://github.com/bucricket/projectMAS.git",
-    packages= ['pydisalexi'],
+    url="https://github.com/bucricket/projectMASpreprocess.git",
+    packages= ['prepare_disalexi'],
     platforms='Posix; MacOS X; Windows',
     license='BSD 3-Clause',
     classifiers=[
