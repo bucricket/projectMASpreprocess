@@ -11,7 +11,7 @@ base = os.getcwd()
     
 try:
     from setuptools import setup
-    setup_kwargs = {'entry_points': {'console_scripts':['preparepydisalexi=prepare_disalexi.processLandsatLAI:main']}}
+    setup_kwargs = {'entry_points': {'console_scripts':['preparepydisalexi=preparepydisalexi.processLandsatLAI:main']}}
 except ImportError:
     from distutils.core import setup
     setup_kwargs = {'scripts': ['bin/preparepydisalexi']}
