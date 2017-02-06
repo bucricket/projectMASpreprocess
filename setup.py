@@ -97,6 +97,7 @@ setup(
     author_email="mitch.schull@noaa.gov",
     url="https://github.com/bucricket/projectMASpreprocess.git",
     packages= ['preparepydisalexi'],
+    package_data={'preparepydisalexi': ['data/*.json']},
     platforms='Posix; MacOS X; Windows',
     license='BSD 3-Clause',
     classifiers=[
