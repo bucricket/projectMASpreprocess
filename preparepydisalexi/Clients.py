@@ -108,7 +108,7 @@ class BaseClient(object):
     def post_order(self, order_content):
         if isinstance(order_content, dict):
             order_content = json.dumps(order_content)
-        return self._post('order',data=order_content)
+        return self._post(data=order_content,'order')
 
 
 class Client(BaseClient):
