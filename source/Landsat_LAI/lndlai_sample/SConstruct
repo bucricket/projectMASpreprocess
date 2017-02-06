@@ -1,0 +1,25 @@
+#!python
+
+import os
+import platform
+import subprocess
+
+
+p = subprocess.Popen(["conda", "info", "--root"],stdout=subprocess.PIPE)
+out = p.communicate()
+condaPath = out[0][:-1]
+base = os.path.abspath(os.path.join(os.getcwd(),os.pardir,os.pardir,os.pardir))
+sourcePath = os.path.join(base,'source')
+binPath = os.path.join(condaPath,'bin')
+
+if not platform.system()=='Linux':
+    env = Environment(CC = os.path.join(binPath,'gcc'))
+else:
+    env = Environment(CC = 'gcc')
+env.Append(CCFLAGS = ['-static'])
+env.Append(LIBPATH = [os.path.join(sourcePath,'lib')])
+env.Append(CPPPATH = [os.path.join(sourcePath,'include')])
+env.Append(LIBS = ['Gctp','hdfeos','mfhdf','df','z','sz','jpeg','m'])
+lndlai_sample = env.Program(target='lndlai_sample', source=['lndlai_util.c','lndlai_sample.c'])
+env.Install(binPath, lndlai_sample)
+env.Alias('install', binPath)

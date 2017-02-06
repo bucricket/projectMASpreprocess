@@ -1,0 +1,6 @@
+Landsat DMS version
+* v1.0 original version used LEDAPS surface reflectance in HDF format (in-house LEDAPS product)
+* v1.1 modified to accept GeoTIFF, ENVI and HDF format  downloaded from USGS EROS 
+* v1.2 used Landsat cloud mask (USGS Landsat fmask product) to exclude cloudy pixels from 
+  training and prediction (10/29/2015). If cloud mask file is not provided, v1.2 will produce 
+  results same as v1.1

@@ -1,0 +1,71 @@
+#ifndef _QA_TOOL_H_
+#define _QA_TOOL_H_
+
+#define NUM_ANGLES 4
+#define NUM_AGG_QC 1
+#define MAX_NUM_OP 10 
+#define MAX_NUM_DIM 16 
+#define MAX_NUM_SDS 50
+#define MAX_GID_LEN 80
+#define MAX_NUM_OBS 255 
+#define MAX_NUM_PNTS 10
+#define MAX_STR_LEN 500
+#define MAX_NUM_PROD 10
+#define MAX_NUM_PATH 20
+#define MAX_NUM_BITS 32
+#define MAX_DIM_SIZE 10
+#define MAX_NUM_META 500
+#define MAX_NUM_FILE 500
+#define MAX_NUM_CLASS 18
+#define MAX_NUM_BANDS 38
+#define NUM_LAND_BANDS 7
+#define MAX_NUM_AGG_OBS 4
+#define MAX_DIR_DEPTH 255
+#define MAX_NUM_PARAM 200
+#define MAX_XSTR_LEN 50000
+#define MAX_NAME_LENGTH 50
+#define MAX_LINE_LENGTH 500
+#define MAX_PATH_LENGTH 255
+#define MAX_SNAME_LENGTH 10
+#define MAX_DIM_NAME_LEN 80
+#define MAX_PARAM_LENGTH 200
+#define MAX_META_NAME_LEN 50
+#define MAX_META_SVAL_LEN 25 
+#define MAX_SDS_NAME_LEN 255 
+#define MAX_META_VAL_LEN 5000
+#define MAX_ATTR_NAME_LEN 80 
+#define MAX_NUM_CLR 24
+
+#define FILL_VALUE_INT8 -1
+#define FILL_VALUE_UINT8 255
+#define FILL_VALUE_INT16 -1
+#define FILL_VALUE_UINT16 65535
+#define FILL_VALUE_INT32 -1
+#define FILL_VALUE_UINT32 4294967295 
+
+#define TILE_QKM 4800
+#define TILE_HKM 2400 
+#define TILE_1KM 1200 
+#define GRAN_QKM_NL 8120
+#define GRAN_QKM_NS 5416
+#define GRAN_HKM_NL 4060
+#define GRAN_HKM_NS 2708
+#define GRAN_1KM_NL 2030
+#define GRAN_1KM_NS 1354
+
+#define NO 0
+#define YES 1
+#define MASK_FILL 2
+#define ANC_ENV "ANCPATH"
+#define MODIS_ENV "MODISPATH"
+#define TMP_ENV "USERTMPPATH"
+#define CMD_ENV "QATOOLCMDPATH"
+#define META_ITEM_END "MODLQA_METADATA_ITEM_END"
+#define ATTR_FILL_NAME "_FillValue"
+#define MOSAIC_FILL_NAME "MissingFile_FillValue"
+#define MASK_FILL_NAME "Mask_FillValue"
+
+#define MAX_IN_SDS 8
+
+
+#endif

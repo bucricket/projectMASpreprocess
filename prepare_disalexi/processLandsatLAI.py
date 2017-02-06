@@ -19,29 +19,26 @@ import argparse
 import getpass
 import keyring
 from pyproj import Proj
+from utils import folders
+from Clients import Client
+from Order import Order
+from OrderTemplate import OrderTemplate
+import pycurl
 
-
-# set project base directory structure
-p = os.getcwd()
-base = os.path.abspath(os.path.join(p,os.pardir))
-#base = os.path.join(os.sep,'Users','mschull','umdGD','pyDisALEXI')
-modisBase = os.path.join(base,'data','MODIS')
-if not os.path.exists(modisBase):
-    os.mkdir(modisBase)
-landsatSR = os.path.join(base,'data','Landsat-8','SR')
-if not os.path.exists(landsatSR):
-    os.mkdir(landsatSR)
+base = os.getcwd()
+Folders = folders(base)   
+modisBase = Folders['modisBase']
+landsatSR = Folders['landsatSR']
+landsatLAI = Folders['landsatLAI']
 landsatTemp = os.path.join(landsatSR,'temp')
 if not os.path.exists(landsatTemp):
     os.mkdir(landsatTemp)
-landsatLAI = os.path.join(base,'data','Landsat-8','LAI')
-if not os.path.exists(landsatLAI):
-    os.mkdir(landsatLAI)
+
+processData = os.path.join(base,'processData')
+if not os.path.exists(processData ):
+    os.mkdir(processData)
 
 def getLandsatData(loc,startDate,endDate,auth):
-    from espa_api_client.Clients import Client
-    from espa_api_client.Order import Order
-    from espa_api_client.OrderTemplate import OrderTemplate
     
     # build the various handlers to spec
     template = OrderTemplate('template')
@@ -102,7 +99,8 @@ def latlon2MODtile(lat,lon):
     return int(V),int(H)
     
 def geotiff2envi():   
-    geotiffConvert = os.path.join(base,'processData','bin','GeoTiff2ENVI')
+    #geotiffConvert = os.path.join(base,'processData','bin','GeoTiff2ENVI')
+    geotiffConvert = 'GeoTiff2ENVI'
     bands = ["blue","green","red","nir","swir1","swir2","cloud"]
     l8bands = ["sr_band2","sr_band3","sr_band4","sr_band5","sr_band6","sr_band7","cfmask"] 
     
@@ -115,7 +113,8 @@ def geotiff2envi():
             subprocess.call(["%s" % geotiffConvert ,"%s" % tifFile, "%s" % datFile])
 
 def sample():    
-    sample = os.path.join(base,'processData','bin','lndlai_sample')
+    #sample = os.path.join(base,'processData','bin','lndlai_sample')
+    sample = 'lndlai_sample'
     bands = ["blue","green","red","nir","swir1","swir2","cloud"]
     l8bands = ["sr_band2","sr_band3","sr_band4","sr_band5","sr_band6","sr_band7","cfmask"] 
     
@@ -201,7 +200,8 @@ def train():
     subprocess.call(["%s" % cubist , "-f" ,"%s" % filestem, "-r", "%d" % nrules, "-u"])
     
 def compute():    
-    lndbio = os.path.join(base,'processData','bin','lndlai_compute')
+    #lndbio = os.path.join(base,'processData','bin','lndlai_compute')
+    lndbio ='lndlai_compute'
     bands = ["blue","green","red","nir","swir1","swir2","cloud"]
     l8bands = ["sr_band2","sr_band3","sr_band4","sr_band5","sr_band6","sr_band7","cfmask"] 
     
@@ -255,75 +255,84 @@ def getLAI():
     train()
     compute()    
 
- # =====USGS credentials===============
- # need to get this from pop up
-usgsUser = str(getpass.getpass(prompt="usgs username:"))
-if keyring.get_password("usgs",usgsUser)==None:
-    usgsPass = str(getpass.getpass(prompt="usgs password:"))
-    keyring.set_password("usgs",usgsUser,usgsPass)
-else:
-    usgsPass = str(keyring.get_password("usgs",usgsUser)) 
+def main():
+    # Get time and location from user
+    parser = argparse.ArgumentParser()
+    parser.add_argument("lat", type=float, help="latitude")
+    parser.add_argument("lon", type=float, help="longitude")
+    parser.add_argument("startDate", type=str, help="Start date yyyy-mm-dd")
+    parser.add_argument("endDate", type=str, help="Start date yyyy-mm-dd")
+    args = parser.parse_args()
+      
+    loc = [args.lat,args.lon] 
+    startDate = args.startDate
+    endDate = args.endDate
 
+    # set project base directory structure
+    #41.18,-96.43
 
- # =====earthData credentials===============
-earthLoginUser = str(getpass.getpass(prompt="earth login username:"))
-if keyring.get_password("nasa",earthLoginUser)==None:
-    earthLoginPass = str(getpass.getpass(prompt="earth login password:"))
-    keyring.set_password("nasa",earthLoginUser,earthLoginPass)
-else:
-    earthLoginPass = str(keyring.get_password("nasa",earthLoginUser)) 
     
-# Get time and location from user
-parser = argparse.ArgumentParser()
-parser.add_argument("lat", type=float, help="latitude")
-parser.add_argument("lon", type=float, help="longitude")
-parser.add_argument("startDate", type=str, help="Start date yyyy-mm-dd")
-parser.add_argument("endDate", type=str, help="Start date yyyy-mm-dd")
-args = parser.parse_args()
-  
-loc = [args.lat,args.lon] 
-startDate = args.startDate
-endDate = args.endDate
-#41.18,-96.43
+    # =====USGS credentials===============
+     # need to get this from pop up
+    usgsUser = str(getpass.getpass(prompt="usgs username:"))
+    if keyring.get_password("usgs",usgsUser)==None:
+        usgsPass = str(getpass.getpass(prompt="usgs password:"))
+        keyring.set_password("usgs",usgsUser,usgsPass)
+    else:
+        usgsPass = str(keyring.get_password("usgs",usgsUser)) 
+    
+    
+     # =====earthData credentials===============
+    earthLoginUser = str(getpass.getpass(prompt="earth login username:"))
+    if keyring.get_password("nasa",earthLoginUser)==None:
+        earthLoginPass = str(getpass.getpass(prompt="earth login password:"))
+        keyring.set_password("nasa",earthLoginUser,earthLoginPass)
+    else:
+        earthLoginPass = str(keyring.get_password("nasa",earthLoginUser)) 
+        
+    
+    #start Landsat order process
+    l8_tiles = getLandsatData(loc,startDate,endDate,("%s"% usgsUser,"%s"% usgsPass))
+    
+    # find MODIS tiles that cover landsat scene
+    # MODIS products   
+    product = 'MCD15A3'
+    version = '005'
+    [v,h]= latlon2MODtile(args.lat,args.lon)
+    tiles = "h%02dv%02d" %(h,v)
+    #tiles = 'h10v04,h10v05'
+    
+    # download MODIS LAI over the same area and time
+    print("Downloading MODIS data...")
+    getMODISlai(tiles,product,version,startDate,endDate,("%s"% earthLoginUser,"%s"% earthLoginPass))
+    
+    
+    # move surface relectance files and estimate get LAI
+    downloadFolder = os.path.join(base,'processData','espa_downloads')
+    folders2move = glob.glob(os.path.join(downloadFolder ,'*'))
+    L8bands = ["sr_band2","sr_band3","sr_band4","sr_band5","sr_band6","sr_band7","cfmask"]
+    bands = ["blue","green","red","nir","swir1","swir2","cloud"]
+    for i in range(len(folders2move)):
+        inputFN = folders2move[i]
+        sceneID = (inputFN).split(os.sep)[-1].split('-')[0]
+        scene = sceneID[3:9]
+        folder = os.path.join(landsatSR,scene)
+        if not os.path.exists(folder):
+            os.mkdir(folder)
+    
+        for filename in glob.glob(os.path.join(inputFN, '*.*')):
+            shutil.copy(filename, folder)  
+        for filename in glob.glob(os.path.join(folder, '*.*')):
+            shutil.copy(filename, landsatTemp)   
+    getLAI()
+    #======Clean up folder===============================
+    shutil.rmtree(downloadFolder)
+    #shutil.rmtree(landsatTemp)
+    print("All done!")
 
-#start Landsat order process
-l8_tiles = getLandsatData(loc,startDate,endDate,("%s"% usgsUser,"%s"% usgsPass))
-
-# find MODIS tiles that cover landsat scene
-# MODIS products   
-product = 'MCD15A3'
-version = '005'
-[v,h]= latlon2MODtile(args.lat,args.lon)
-tiles = "h%02dv%02d" %(h,v)
-#tiles = 'h10v04,h10v05'
-
-# download MODIS LAI over the same area and time
-print("Downloading MODIS data...")
-getMODISlai(tiles,product,version,startDate,endDate,("%s"% earthLoginUser,"%s"% earthLoginPass))
-
-
-# move surface relectance files and estimate get LAI
-downloadFolder = os.path.join(base,'processData','espa_downloads')
-folders2move = glob.glob(os.path.join(downloadFolder ,'*'))
-L8bands = ["sr_band2","sr_band3","sr_band4","sr_band5","sr_band6","sr_band7","cfmask"]
-bands = ["blue","green","red","nir","swir1","swir2","cloud"]
-for i in range(len(folders2move)):
-    inputFN = folders2move[i]
-    sceneID = (inputFN).split(os.sep)[-1].split('-')[0]
-    scene = sceneID[3:9]
-    folder = os.path.join(landsatSR,scene)
-    if not os.path.exists(folder):
-        os.mkdir(folder)
-
-    for filename in glob.glob(os.path.join(inputFN, '*.*')):
-        shutil.copy(filename, folder)  
-    for filename in glob.glob(os.path.join(folder, '*.*')):
-        shutil.copy(filename, landsatTemp)   
-getLAI()
-#======Clean up folder===============================
-shutil.rmtree(downloadFolder)
-#shutil.rmtree(landsatTemp)
-print("All done!")
-
-   
+if __name__ == "__main__":
+    try:
+        main()
+    except (KeyboardInterrupt, pycurl.error):
+        exit('Received Ctrl + C... Exiting! Bye.', 1)   
     

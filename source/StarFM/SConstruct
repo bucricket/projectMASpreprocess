@@ -1,0 +1,39 @@
+#!python
+
+import os
+import platform
+import subprocess
+
+
+p = subprocess.Popen(["conda", "info", "--root"],stdout=subprocess.PIPE)
+out = p.communicate()
+condaPath = out[0][:-1]
+base = os.path.abspath(os.path.join(os.getcwd(),os.pardir,os.pardir))
+sourcePath = os.path.join(base,'source')
+binPath = os.path.join(condaPath,'bin')
+
+if not platform.system()=='Linux':
+    env = Environment(CC = os.path.join(binPath,'gcc'))
+else:
+    env = Environment(CC = 'gcc')
+#env = Environment(CC = 'gcc')
+env.Append(CCFLAGS = ['-static', '-Wall','-O2','-fopenmp'])
+env.Append(LIBPATH = [os.path.join(sourcePath,'lib')])
+env.Append(CPPPATH = [os.path.join(sourcePath,'include')])
+#env.Append(LIBS = ['hdfeos','Gctp','mfhdf','df','sz','z','jpeg','m'])
+env.Append(LIBS = ['m'])
+
+gapfillLAI = env.Program(target='starFM', source=['StarFM_main.c',
+'StarFM_compute.c','StarFM_util.c','StarFM_alloc.c'])
+
+#DOES NOT WORK NOW
+#env = Environment(F90 = 'gfortran')
+#env.Append(F90FLAGS = ['-m32','-static'])
+#env.Append(F90FLAGS = ['-static'])
+#
+#sources= ['basis.f90','fitgauss.f90','fitlogistic.f90','fungauss.f90',
+#          'funlogistic.f90','gauss.f90','linlsq.f90','marquardt.f90',
+#          'modweight.f90','median.f90','phenology.f90','savgol.f90',
+#          'season.f90','spike.f90','timesatLAI.f90']
+#          
+#timesatLAI = env.Program(target='timesatLAI', source=sources)

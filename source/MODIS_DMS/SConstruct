@@ -1,0 +1,34 @@
+#!python
+
+import os
+import platform
+import subprocess
+
+
+p = subprocess.Popen(["conda", "info", "--root"],stdout=subprocess.PIPE)
+out = p.communicate()
+condaPath = out[0][:-1]
+base = os.path.abspath(os.path.join(os.getcwd(),os.pardir,os.pardir))
+sourcePath = os.path.join(base,'source')
+binPath = os.path.join(condaPath,'bin')
+
+if not platform.system()=='Linux':
+    env = Environment(CC = os.path.join(binPath,'gcc'))
+else:
+    env = Environment(CC = 'gcc')
+env.Append(CCFLAGS = ['-g','-O3'])
+env.Append(LIBPATH = [os.path.join(sourcePath,'lib')])
+env.Append(CPPPATH = [os.path.join(sourcePath,'include')])
+env.Append(LIBS = ['geotiff','tiff','z','jpeg','m','lzma'])
+
+combineModels = env.Program(target='mod_combine_models', source=['utility.c','sensor.c','combine_models.c'])
+env.Append(LIBS = ['geotiff','tiff','m'])
+getSamples = env.Program(target='mod_get_samples', source=['utility.c','sensor.c','get_samples.c'])
+env.Append(LIBS = ['geotiff','tiff','z','sz','jpeg','m'])
+predict_fineT = env.Program(target='mod_predict_fineT', source=['utility.c','sensor.c','predict_fineT.c'])
+env.Append(LIBS = ['m'])
+modlst_C2K = env.Program(target='modlst_C2K', source=['modlst_C2K.c'])
+modndvi_F2I = env.Program(target='modndvi_F2I', source=['modndvi_F2I.c'])
+
+env.Install(binPath, [combineModels,getSamples,predict_fineT,modlst_C2K,modndvi_F2I])
+env.Alias('install', binPath)
