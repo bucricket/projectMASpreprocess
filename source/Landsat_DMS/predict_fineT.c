@@ -65,7 +65,7 @@
  * v1.3 modified sharpening according to view zenith angle (11/11/2015)
  */
 
-#include "modis.h"
+#include "landsat.h"
 
 int main(int Argc, char *Argv[])
 /*  ----  */
