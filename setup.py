@@ -94,7 +94,7 @@ setup(
     author="Mitchell Schull",
     author_email="mitch.schull@noaa.gov",
     url="https://github.com/bucricket/projectMASpreprocess.git",
-    packages= ['prepare_disalexi'],
+    packages= ['preparepydisalexi'],
     platforms='Posix; MacOS X; Windows',
     license='BSD 3-Clause',
     classifiers=[
