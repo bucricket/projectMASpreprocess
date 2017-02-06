@@ -70,7 +70,7 @@ class BaseClient(object):
                          headers=self.headers)
         return r
 
-    def _post(self, *args, data=None):
+    def _post(self, data, *args):
         """ wraps requests.post with url assembly from args, plus auth and header spec """
         r = requests.post(url=self._url(*args),
                           auth=self.auth,
@@ -108,7 +108,7 @@ class BaseClient(object):
     def post_order(self, order_content):
         if isinstance(order_content, dict):
             order_content = json.dumps(order_content)
-        return self._post('order', data=order_content)
+        return self._post(data=order_content,'order')
 
 
 class Client(BaseClient):
@@ -144,7 +144,9 @@ class Client(BaseClient):
         """
         if order_id is None:
             for order_id in self.get_active_orders():
-                yield from self.get_items_by_status(order_id=order_id, status=status)
+                for bar in self.get_items_by_status(order_id=order_id, status=status):
+                    yield bar
+                #yield from self.get_items_by_status(order_id=order_id, status=status)
         else:
             items = self.get_item_status(order_id).json()
             if "orderid" in items.keys():  # if this funciton is nested, need to parse more
