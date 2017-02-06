@@ -72,6 +72,7 @@ class BaseClient(object):
 
     def _post(self,*args, **kwargs):
         """ wraps requests.post with url assembly from args, plus auth and header spec """
+        data = kwargs.pop('data')
         r = requests.post(url=self._url(*args),
                           auth=self.auth,
                           headers=self.headers,
