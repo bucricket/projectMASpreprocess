@@ -51,33 +51,37 @@ subprocess.call(["ln","-s", "%s" % os.path.join(libEnv,'libmfhdf.a'),
 subprocess.call(["ln","-s", "%s" % os.path.join(libEnv,'libhdfeos.a'), 
 "%s" % os.path.join(libDir,'libhdfeos.a')])
 
+print ("installing lndlai_compute...")
 mkPath = os.path.join(processDir,'source','Landsat_LAI','lndlai_compute')
 os.chdir(mkPath)
 subprocess.call(["scons","-Q","install"])
 subprocess.call(["scons","-c"])
 
+print ("installing lndlai_sample...")
 mkPath = os.path.join(processDir,'source','Landsat_LAI','lndlai_sample')
 os.chdir(mkPath)
 subprocess.call(["scons","-Q","install"])
 subprocess.call(["scons","-c"])
 
-
+print ("installing GeoTiff2ENVI...")
 mkPath = os.path.join(processDir,'source','Landsat_LAI','GeoTiff2ENVI')
 os.chdir(mkPath)
 subprocess.call(["scons","-Q","install"])
 subprocess.call(["scons","-c"])
 
-
+print ("installing Landsat_DMS...")
 mkPath = os.path.join(processDir,'source','Landsat_DMS')
 os.chdir(mkPath)
 subprocess.call(["scons","-Q","install"])
 subprocess.call(["scons","-c"])
 
+print ("installing MODIS_DMS...")
 mkPath = os.path.join(processDir,'source','MODIS_DMS')
 os.chdir(mkPath)
 subprocess.call(["scons","-Q","install"])
 subprocess.call(["scons","-c"])
 
+print ("installing Cubist...")
 mkPath = os.path.join(processDir,'source','Cubist')
 os.chdir(mkPath)
 subprocess.call(["scons","-Q","install"])
