@@ -70,9 +70,9 @@ class BaseClient(object):
                          headers=self.headers)
         return r
 
-    def _post(self, data=None, *args):
+    def _post(self, data=None, **args):
         """ wraps requests.post with url assembly from args, plus auth and header spec """
-        r = requests.post(url=self._url(*args),
+        r = requests.post(url=self._url(**args),
                           auth=self.auth,
                           headers=self.headers,
                           data=data)
