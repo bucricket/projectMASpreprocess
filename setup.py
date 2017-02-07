@@ -23,9 +23,10 @@ from preparepydisalexi import __version__
 p = subprocess.Popen(["conda", "info", "--root"],stdout=subprocess.PIPE)
 out = p.communicate()
 condaPath = out[0][:-1]
-libEnv = os.path.join(condaPath,'lib')    
+    
 prefix  = os.environ.get('PREFIX')
 processDir = os.path.abspath(os.path.join('$PREFIX',os.pardir))
+libEnv = os.path.join(processDir,'lib')
 libDir = os.path.join(processDir,'source','lib')
 
 
