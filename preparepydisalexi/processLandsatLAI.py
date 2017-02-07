@@ -157,8 +157,8 @@ def sample():
             os.remove(os.path.join(laiPath,"slai%s.inp" % i))
             
 def train():    
-    cubist = os.path.join(base,'processData','bin','cubist')
-    
+    #cubist = os.path.join(base,'processData','bin','cubist')
+    cubist = 'cubist'
     landsatFiles = glob.glob(os.path.join(landsatLAI,"*.txt"))
     #======combine input data======================================
     df = pd.DataFrame(columns=['ulx','uly','blue',
