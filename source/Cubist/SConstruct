@@ -18,11 +18,15 @@ if not platform.system()=='Linux':
 else:
     env = Environment(CC = 'gcc')
     # Get our configuration options:
-opts = Variables('wm.conf') # Change wm to the name of your app
-opts.Add(PathVariable('--prefix', 'Directory to install under', '/usr', PathVariable.PathIsDir))
-opts.Update(env)
-opts.Save('wm.conf', env) # Save, so user doesn't have to 
-                          # specify PREFIX every time
+
+AddOption('--prefix',
+          dest='prefix',
+          type='string',
+          nargs=1,
+          action='store',
+          metavar='DIR',
+          help='installation prefix')
+env.Replace(PREFIX = GetOption('prefix'))
 binPath = '$PREFIX/bin'
 env.Append(CCFLAGS = ['-static','-ffloat-store','-O3','-DVerbOpt',
 '-g', '-Wall', '-O0'])
