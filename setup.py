@@ -74,7 +74,7 @@ subprocess.call(["scons","-c"])
 print ("installing Landsat_DMS...")
 mkPath = os.path.join(processDir,'source','Landsat_DMS')
 os.chdir(mkPath)
-subprocess.call(["scons","-Q","install"])
+subprocess.call(["scons","-Q","--prefix=%s" % prefix,"install"])
 subprocess.call(["scons","-c"])
 
 print ("installing MODIS_DMS...")
