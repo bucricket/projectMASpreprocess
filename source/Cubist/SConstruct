@@ -22,9 +22,9 @@ AddOption('--prefix',
 env = Environment(PREFIX = GetOption('prefix'))
 binPath = '$PREFIX/bin'
 if not platform.system()=='Linux':
-    env.Replace(Environment(CC = os.path.join(binPath,'gcc')))
+    env.Replace(CC = os.path.join(binPath,'gcc'))
 else:
-    env.Replace(Environment(CC = 'gcc'))
+    env.Replace(CC = 'gcc')
     # Get our configuration options:
 
 
