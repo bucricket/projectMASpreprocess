@@ -53,7 +53,7 @@ out = p.communicate()
 condaPath = out[0][:-1]
 libEnv = os.path.join(condaPath,'lib')    
 print (os.environ.get('PREFIX'))
-processDir = '$PREFIX/work'
+processDir = os.path.abspath('$PREFIX',os.pardir)
 libDir = os.path.join(processDir,'source','lib')
 
 
