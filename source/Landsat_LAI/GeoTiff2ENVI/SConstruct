@@ -4,18 +4,23 @@ import os
 import platform
 import subprocess
 
-
-p = subprocess.Popen(["conda", "info", "--root"],stdout=subprocess.PIPE)
-out = p.communicate()
-condaPath = out[0][:-1]
-base = os.path.abspath(os.path.join(os.getcwd(),os.pardir,os.pardir,os.pardir))
+AddOption('--prefix',
+          dest='prefix',
+          type='string',
+          nargs=1,
+          action='store',
+          metavar='DIR',
+          help='installation prefix')
+env = Environment(PREFIX = GetOption('prefix'))
+base = os.path.abspath(os.path.join('$PREFIX',os.pardir))
 sourcePath = os.path.join(base,'source')
-binPath = os.path.join(condaPath,'bin')
+binPath = os.path.join('$PREFIX','bin')
 
 if not platform.system()=='Linux':
-    env = Environment(CC = os.path.join(binPath,'gcc'))
+    env.Replace(CC = os.path.join(binPath,'gcc'))
 else:
-    env = Environment(CC = 'gcc')
+    env.Replace(CC = 'gcc')
+    
 env.Append(CCFLAGS = ['-static'])
 env.Append(LIBPATH = [os.path.join(condaPath,'lib')])
 env.Append(CPPPATH = [os.path.join(sourcePath,'include')])
