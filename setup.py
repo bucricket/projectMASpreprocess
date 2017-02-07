@@ -84,7 +84,7 @@ subprocess.call(["scons","-c"])
 print ("installing Cubist...")
 mkPath = os.path.join(processDir,'source','Cubist')
 os.chdir(mkPath)
-subprocess.call(["scons","-Q","PREFIX=$PREFIX","install"])
+subprocess.call(["scons","-Q","--prefix=$PREFIX","install"])
 subprocess.call(["scons","-c"])
 os.chdir(base)
 
