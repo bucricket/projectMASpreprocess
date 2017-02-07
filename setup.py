@@ -26,11 +26,12 @@ condaPath = out[0][:-1]
     
 prefix  = os.environ.get('PREFIX')
 processDir = os.path.abspath(os.path.join('$PREFIX',os.pardir))
-libEnv = os.path.join(processDir,'lib')
+libEnv = os.path.join(prefix,'lib')
 libDir = os.path.join(processDir,'source','lib')
 
 
 #====Creating SYMBOLIC L:INKS===========
+
 subprocess.call(["ln","-s", "%s" % os.path.join(libEnv,'libtiff.a'), 
 "%s" % os.path.join(libDir,'libtiff.a')])
 subprocess.call(["ln","-s", "%s" % os.path.join(libEnv,'liblzma.a'), 
