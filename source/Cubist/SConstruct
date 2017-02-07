@@ -12,13 +12,6 @@ base = os.path.abspath(os.path.join(os.getcwd(),os.pardir,os.pardir))
 sourcePath = os.path.join(base,'source')
 binPath = os.path.join(condaPath,'bin')
 
-
-if not platform.system()=='Linux':
-    env = Environment(CC = os.path.join(binPath,'gcc'))
-else:
-    env = Environment(CC = 'gcc')
-    # Get our configuration options:
-
 AddOption('--prefix',
           dest='prefix',
           type='string',
@@ -26,8 +19,15 @@ AddOption('--prefix',
           action='store',
           metavar='DIR',
           help='installation prefix')
-env.Replace(PREFIX = GetOption('prefix'))
+env = Environment(PREFIX = GetOption('prefix'))
 binPath = '$PREFIX/bin'
+if not platform.system()=='Linux':
+    env.Replace(Environment(CC = os.path.join(binPath,'gcc')))
+else:
+    env.Replace(Environment(CC = 'gcc'))
+    # Get our configuration options:
+
+
 env.Append(CCFLAGS = ['-static','-ffloat-store','-O3','-DVerbOpt',
 '-g', '-Wall', '-O0'])
 env.Append(LIBPATH = [os.path.join(sourcePath,'lib')])
