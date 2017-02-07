@@ -22,7 +22,7 @@ else:
     env.Replace(CC = 'gcc')
     
 env.Append(CCFLAGS = ['-static'])
-env.Append(LIBPATH = [os.path.join(condaPath,'lib')])
+env.Append(LIBPATH = [os.path.join(sourcePath,'lib')])
 env.Append(CPPPATH = [os.path.join(sourcePath,'include')])
 env.Append(LIBS = ['tiff','geotiff','z','jpeg','lzma','m'])
 GeoTiff2ENVI = env.Program(target='GeoTiff2ENVI', source=['GeoTiff2ENVI.c'])
