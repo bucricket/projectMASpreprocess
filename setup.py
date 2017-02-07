@@ -18,6 +18,34 @@ except ImportError:
     
 from preparepydisalexi import __version__
 
+#=============setup the python scripts============================
+
+
+
+setup(
+    name="projectmaspreprocess",
+    version=__version__,
+    description="prepare data for input to pyDisALEXI",
+    author="Mitchell Schull",
+    author_email="mitch.schull@noaa.gov",
+    url="https://github.com/bucricket/projectMASpreprocess.git",
+    packages= ['preparepydisalexi'],
+    package_data={'preparepydisalexi': ['data/*.json']},
+    platforms='Posix; MacOS X; Windows',
+    license='BSD 3-Clause',
+    classifiers=[
+        'Development Status :: 2 - Pre-Alpha',
+        'Intended Audience :: Developers',
+        'Intended Audience :: Science/Research',
+        'License :: OSI Approved :: MIT License',
+        'Programming Language :: Python :: 2',
+        # Uses dictionary comprehensions ==> 2.7 only
+        'Programming Language :: Python :: 2.7',
+        'Topic :: Scientific/Engineering :: GIS',
+    ],  
+    **setup_kwargs
+)
+
 #=====build DMS binaries===============================
 # get Anaconda root location
 p = subprocess.Popen(["conda", "info", "--root"],stdout=subprocess.PIPE)
@@ -89,30 +117,4 @@ subprocess.call(["scons","-c"])
 os.chdir(base)
 
 
-#=============setup the python scripts============================
 
-
-
-setup(
-    name="projectmaspreprocess",
-    version=__version__,
-    description="prepare data for input to pyDisALEXI",
-    author="Mitchell Schull",
-    author_email="mitch.schull@noaa.gov",
-    url="https://github.com/bucricket/projectMASpreprocess.git",
-    packages= ['preparepydisalexi'],
-    package_data={'preparepydisalexi': ['data/*.json']},
-    platforms='Posix; MacOS X; Windows',
-    license='BSD 3-Clause',
-    classifiers=[
-        'Development Status :: 2 - Pre-Alpha',
-        'Intended Audience :: Developers',
-        'Intended Audience :: Science/Research',
-        'License :: OSI Approved :: MIT License',
-        'Programming Language :: Python :: 2',
-        # Uses dictionary comprehensions ==> 2.7 only
-        'Programming Language :: Python :: 2.7',
-        'Topic :: Scientific/Engineering :: GIS',
-    ],  
-    **setup_kwargs
-)
