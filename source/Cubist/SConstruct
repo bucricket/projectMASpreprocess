@@ -19,7 +19,7 @@ else:
     env = Environment(CC = 'gcc')
     # Get our configuration options:
 opts = Variables('wm.conf') # Change wm to the name of your app
-opts.Add(PathVariable('PREFIX', 'Directory to install under', '/usr', PathVariable.PathIsDir))
+opts.Add(PathVariable('--prefix', 'Directory to install under', '/usr', PathVariable.PathIsDir))
 opts.Update(env)
 opts.Save('wm.conf', env) # Save, so user doesn't have to 
                           # specify PREFIX every time
