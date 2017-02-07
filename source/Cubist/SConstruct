@@ -11,6 +11,7 @@ condaPath = out[0][:-1]
 base = os.path.abspath(os.path.join(os.getcwd(),os.pardir,os.pardir))
 sourcePath = os.path.join(base,'source')
 binPath = os.path.join(condaPath,'bin')
+binPath = '$PREFIX/bin'
 
 if not platform.system()=='Linux':
     env = Environment(CC = os.path.join(binPath,'gcc'))
