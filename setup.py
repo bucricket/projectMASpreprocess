@@ -24,7 +24,7 @@ p = subprocess.Popen(["conda", "info", "--root"],stdout=subprocess.PIPE)
 out = p.communicate()
 condaPath = out[0][:-1]
 libEnv = os.path.join(condaPath,'lib')    
-print (os.environ.get('PREFIX'))
+prefix (os.environ.get('PREFIX'))
 processDir = os.path.abspath(os.path.join('$PREFIX',os.pardir))
 libDir = os.path.join(processDir,'source','lib')
 
@@ -84,7 +84,7 @@ subprocess.call(["scons","-c"])
 print ("installing Cubist...")
 mkPath = os.path.join(processDir,'source','Cubist')
 os.chdir(mkPath)
-subprocess.call(["scons","-Q","--prefix=$PREFIX","install"])
+subprocess.call(["scons","-Q","--prefix=%s" % prefix,"install"])
 subprocess.call(["scons","-c"])
 os.chdir(base)
 
