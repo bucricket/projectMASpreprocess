@@ -15,6 +15,7 @@ AddOption('--prefix',
 env = Environment(PREFIX = GetOption('prefix'))
 prefix = GetOption('prefix')
 base = os.path.abspath(os.path.join(prefix,os.pardir))
+base = os.path.join(base,'work')
 sourcePath = os.path.join(base,'source')
 binPath = os.path.join(prefix,'bin')
 
