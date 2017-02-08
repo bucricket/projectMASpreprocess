@@ -21,6 +21,7 @@ if not platform.system()=='Linux':
 else:
     env.Replace(CC = 'gcc')
 print ("source: %s" % sourcePath)    
+print ("bin: %s" % binPath) 
 env.Append(CCFLAGS = ['-static'])
 env.Append(LIBPATH = [os.path.join(sourcePath,'lib')])
 env.Append(CPPPATH = [os.path.join(sourcePath,'include')])
