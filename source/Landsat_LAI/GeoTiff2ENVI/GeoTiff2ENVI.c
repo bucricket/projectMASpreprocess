@@ -30,7 +30,7 @@ int writeENVIheader(GEOTIFF *mydata);
 
 int main(int argc, char *argv[])
 {
-  int i, j;
+  int i;
   FILE *out;
   GEOTIFF *mydata;
 
@@ -167,7 +167,6 @@ int getGeoTiffInfo(GEOTIFF *mydata)
 int writeENVIheader(GEOTIFF *mydata)
 {
   char fname[100];
-  int  iband;
   FILE *fp;
 
   sprintf(fname, "%s.hdr", mydata->outName);
