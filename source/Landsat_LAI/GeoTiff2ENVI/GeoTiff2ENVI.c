@@ -165,38 +165,3 @@ int getGeoTiffInfo(GEOTIFF *mydata)
 }
 
 
-int writeENVIheader(GEOTIFF *mydata)
-{
-  char fname[100];
-  int  iband;
-  FILE *fp;
-
-  sprintf(fname, "%s.hdr", mydata->outName);
-  if((fp=fopen(fname, "w"))==NULL) {
-    fprintf(stderr, "can't write header for output file %s\n", fname);
-    return FAILURE;
-  }
-
-  fprintf(fp, "ENVI\n");
-  fprintf(fp, "description = {converted from GeoTiff %s}\n", mydata->fileName);
-  fprintf(fp, "samples = %d\n", mydata->ncols);
-  fprintf(fp, "lines = %d\n", mydata->nrows);
-  fprintf(fp, "bands = 1\n");
-  fprintf(fp, "header offset = 0\n");
-  fprintf(fp, "byte order = 0\n");
-  fprintf(fp, "file type = ENVI Standard\n");
-  fprintf(fp, "data type = %d\n", mydata->type);
-  fprintf(fp, "data ignore value = %d\n", mydata->fillv);
-  fprintf(fp, "interleave = BSQ\n");
-  fprintf(fp, "sensor type = %s\n", mydata->instrument);
-  fprintf(fp, "map info = {UTM, 1.000, 1.000, %f, %f, %f, %f, ", mydata->ulx, mydata->uly, mydata->res, mydata->res); 
-  if(mydata->utm_zone > 0)
-    fprintf(fp, "%d, North, WGS-84, units=Meters}\n", abs(mydata->utm_zone));
-  else
-    fprintf(fp, "%d, South, WGS-84, units=Meters}\n", abs(mydata->utm_zone));  
-  fprintf(fp, "band names = {%s}\n", mydata->bandname);
-
-  fclose(fp);
-
-  return SUCCESS;
-}
