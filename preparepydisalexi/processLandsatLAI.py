@@ -8,7 +8,7 @@ Created on Thu Dec  1 13:50:04 2016
 """
 #python
 
-from search import Search
+from .search import Search
 import os
 import subprocess
 import glob
@@ -19,10 +19,10 @@ import argparse
 import getpass
 import keyring
 from pyproj import Proj
-from utils import folders
-from Clients import Client
-from Order import Order
-from OrderTemplate import OrderTemplate
+from .utils import folders
+from .Clients import Client
+from .Order import Order
+from .OrderTemplate import OrderTemplate
 import pycurl
 
 base = os.getcwd()
