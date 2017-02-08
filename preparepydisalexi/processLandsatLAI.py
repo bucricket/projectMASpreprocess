@@ -8,7 +8,7 @@ Created on Thu Dec  1 13:50:04 2016
 """
 #python
 
-from landsat.search import Search
+from search import Search
 import os
 import subprocess
 import glob
