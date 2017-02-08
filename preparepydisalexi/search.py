@@ -105,7 +105,6 @@ class Search(object):
         self.api_url = API_URL
 
     def search(self, paths_rows=None, lat=None, lon=None, address=None, start_date=None, end_date=None, cloud_min=None,
-    def search(self, paths_rows=None, lat=None, lon=None, address=None, start_date=None, end_date=None, cloud_min=None,
                cloud_max=None, limit=1, geojson=False):
         """
         The main method of Search class. It searches Development Seed's Landsat API.
