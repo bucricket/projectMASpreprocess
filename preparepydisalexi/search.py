@@ -105,9 +105,11 @@ class Search(object):
         self.api_url = API_URL
 
     def search(self, paths_rows=None, lat=None, lon=None, address=None, start_date=None, end_date=None, cloud_min=None,
+    def search(self, paths_rows=None, lat=None, lon=None, address=None, start_date=None, end_date=None, cloud_min=None,
                cloud_max=None, limit=1, geojson=False):
         """
         The main method of Search class. It searches Development Seed's Landsat API.
+
         :param paths_rows:
             A string in this format: "003,003,004,004". Must be in pairs and separated by comma.
         :type paths_rows:
@@ -141,35 +143,37 @@ class Search(object):
         :type cloud_max:
             float
         :param limit:
-            integer specifying the maximum results return.
+            integer specigying the maximum results return.
         :type limit:
             integer
         :param geojson:
             boolean specifying whether to return a geojson object
         :type geojson:
             boolean
+
         :returns:
             dict
+
         :example:
-            s = Search()
-            s.search('003,003', '2014-01-01', '2014-06-01')
-            {
-                'status': u'SUCCESS',
-                'total_returned': 1,
-                'total': 1,
-                'limit': 1
-                'results': [
-                    {
-                        'sat_type': u'L8',
-                        'sceneID': u'LC80030032014142LGN00',
-                        'date': u'2014-05-22',
-                        'path': u'003',
-                        'thumbnail': u'http://....../landsat_8/2014/003/003/LC80030032014142LGN00.jpg',
-                        'cloud': 33.36,
-                        'row': u'003
-                    }
-                ]
-            }
+            >>> search = Search()
+            >>> search('003,003', '2014-01-01', '2014-06-01')
+            >>> {
+                    'status': u'SUCCESS',
+                    'total_returned': 1,
+                    'total': 1,
+                    'limit': 1
+                    'results': [
+                        {
+                            'sat_type': u'L8',
+                            'sceneID': u'LC80030032014142LGN00',
+                            'date': u'2014-05-22',
+                            'path': u'003',
+                            'thumbnail': u'http://....../landsat_8/2014/003/003/LC80030032014142LGN00.jpg',
+                            'cloud': 33.36,
+                            'row': u'003
+                        }
+                    ]
+                }
         """
 
         search_string = self.query_builder(paths_rows, lat, lon, address, start_date, end_date, cloud_min, cloud_max)
@@ -222,8 +226,8 @@ class Search(object):
 
             else:
                 result['status'] = u'SUCCESS'
-                result['total'] = r_dict['meta']['results']['total']
-                result['limit'] = r_dict['meta']['results']['limit']
+                result['total'] = r_dict['meta']['found']
+                result['limit'] = r_dict['meta']['limit']
                 result['total_returned'] = len(r_dict['results'])
                 result['results'] = [{'sceneID': i['sceneID'],
                                       'sat_type': u'L8',
