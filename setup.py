@@ -26,7 +26,7 @@ condaPath = out[0][:-1]
     
 prefix  = os.environ.get('PREFIX')
 print (prefix)
-processDir = os.path.abspath(os.path.join('$PREFIX',os.pardir))
+processDir = os.path.abspath(os.path.join(prefix,os.pardir))
 libEnv = os.path.join(prefix,'lib')
 libDir = os.path.join(processDir,'source','lib')
 
