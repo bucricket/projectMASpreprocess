@@ -13,14 +13,13 @@ AddOption('--prefix',
           metavar='DIR',
           help='installation prefix')
 env = Environment(PREFIX = GetOption('prefix'))
-base = os.path.abspath(os.path.join('$PREFIX',os.pardir))
+prefix = GetOption('prefix')
+base = os.path.abspath(os.path.join(prefix,os.pardir))
 sourcePath = os.path.join(base,'source')
-binPath = os.path.join('$PREFIX','bin')
+binPath = os.path.join(prefix,'bin')
 
-if not platform.system()=='Linux':
-    env.Replace(CC = os.path.join(binPath,'gcc'))
-else:
-    env.Replace(CC = 'gcc')
+#if not platform.system()=='Linux':
+env.Replace(CC = os.path.join(binPath,'gcc'))
     
 env.Append(CCFLAGS = ['-static'])
 env.Append(LIBPATH = [os.path.join(sourcePath,'lib')])
