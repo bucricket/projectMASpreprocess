@@ -9,7 +9,8 @@ import geocoder
 import re
 
 
-API_URL = 'https://api.developmentseed.org/landsat'
+#API_URL = 'https://api.developmentseed.org/landsat' #0.13.0
+API_URL = 'https://api.developmentseed.org/satellites/landsat' #0.13.1
 
 # Geocoding confidence scores,
 # from https://github.com/DenisCarriere/geocoder/blob/master/docs/features/Confidence%20Score.md
