@@ -15,7 +15,7 @@ env = Environment(PREFIX = GetOption('prefix'))
 prefix = GetOption('prefix')
 base = os.path.abspath(os.path.join(prefix,os.pardir))
 sourcePath = os.path.join(base,'source')
-binPath = os.path.join('$PREFIX','bin')
+binPath = os.path.join(prefix,'bin')
 
 if not platform.system()=='Linux':
     env.Replace(CC = os.path.join(binPath,'gcc'))
