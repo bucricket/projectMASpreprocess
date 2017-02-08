@@ -166,7 +166,7 @@ int getGeoTiffInfo(GEOTIFF *mydata)
 
 int writeENVIheader(GEOTIFF *mydata)
 {
-  char fname[100];
+  char fname[500];
   FILE *fp;
 
   sprintf(fname, "%s.hdr", mydata->outName);
