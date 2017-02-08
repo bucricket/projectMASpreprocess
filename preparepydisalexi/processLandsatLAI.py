@@ -308,7 +308,7 @@ def main():
     
     
     # move surface relectance files and estimate get LAI
-    downloadFolder = os.path.join(base,'processData','espa_downloads')
+    downloadFolder = os.path.join(base,'espa_downloads')
     folders2move = glob.glob(os.path.join(downloadFolder ,'*'))
     L8bands = ["sr_band2","sr_band3","sr_band4","sr_band5","sr_band6","sr_band7","cfmask"]
     bands = ["blue","green","red","nir","swir1","swir2","cloud"]
