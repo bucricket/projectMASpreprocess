@@ -18,6 +18,7 @@ import datetime
 import argparse
 import getpass
 import keyring
+import json
 from pyproj import Proj
 from .utils import folders
 from .Clients import Client
@@ -40,9 +41,17 @@ if not os.path.exists(processData ):
 
 def getLandsatData(loc,startDate,endDate,auth):
     
+    
+    data = {'olitirs8':{"inputs":[],"products": ["sr", "cloud"]},"format":"gtiff",
+        "plot_statistics":"false","note":""}    
+
+
+    with open('order.json', 'w') as outfile:  
+        json.dump(data, outfile)
+    
     # build the various handlers to spec
     template = OrderTemplate('template')
-    template.load(path='./L8SR_UTMorder.json' )
+    template.load(path='./order.json' )
     order = Order(template, note="Lat%dLon%d-%s_%s" %(int(loc[0]),int(loc[1]),startDate,endDate))
     client = Client(auth) # will prompt user for username and password if auth argument not supplied
     #downloader = EspaLandsatLocalDownloader('USGS_downloads')
