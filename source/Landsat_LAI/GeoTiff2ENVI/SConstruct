@@ -21,7 +21,8 @@ if not platform.system()=='Linux':
 else:
     env.Replace(CC = 'gcc')
     
-env.Append(CCFLAGS = ['-static'])
+env.Append(CCFLAGS = ['-static','-ffloat-store','-O3','-DVerbOpt',
+'-g', '-Wall', '-O0'])
 env.Append(LIBPATH = [os.path.join(sourcePath,'lib')])
 env.Append(CPPPATH = [os.path.join(sourcePath,'include')])
 env.Append(LIBS = ['tiff','geotiff','z','jpeg','lzma','m'])
