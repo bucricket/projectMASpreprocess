@@ -43,7 +43,7 @@ def getLandsatData(loc,startDate,endDate,auth):
     
     
     data = {'olitirs8':{"inputs":[],"products": ["sr", "cloud"]},"format":"gtiff",
-        "plot_statistics":"false","note":""}    
+        "plot_statistics":False,"note":""}    
 
 
     with open('order.json', 'w') as outfile:  
