@@ -42,7 +42,7 @@ if not os.path.exists(processData ):
 def getLandsatData(loc,startDate,endDate,auth):
     
     
-    data = {'olitirs8':{"inputs":[],"products": ["sr", "cloud"]},"format":"gtiff",
+    data = {'olitirs8':{"inputs":[],"products": ["sr", "bt","cloud"]},"format":"gtiff",
         "plot_statistics":False,"note":""}    
 
 
