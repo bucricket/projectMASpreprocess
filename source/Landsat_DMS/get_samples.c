@@ -131,8 +131,7 @@ int savePureSamples(SENSOR *spec, SENSOR *th, INPUT_PARS *pars)
   total = 0.0;  
   count = 0.0;
   for(i=0; i<th->nrows; i++) {
-	printf("\n\tend row = %d", pars->e_row);
-	printf("\n\tend col = %d", pars->e_col);
+
     if(i < pars->s_row || i > pars->e_row) continue;
     /* load lines to memory to compute mean values */
     for(m=i*scale; m<(i+1)*scale; m++) {
@@ -146,7 +145,9 @@ int savePureSamples(SENSOR *spec, SENSOR *th, INPUT_PARS *pars)
     for(j=0; j<th->ncols; j++) {
       
       if(j < pars->s_col || j > pars->e_col) continue;
-
+		printf("\n\tdata = %d", th->fdata[i][j]);
+		printf("\n\range lower = %d", th->range[0]);
+		printf("\n\range upper = %d", th->range[1]);
       if(th->fdata[i][j]>=th->range[0] && th->fdata[i][j]<=th->range[1]) {
 
 	sd2 = 0.0;
