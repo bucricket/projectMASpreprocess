@@ -131,7 +131,8 @@ int savePureSamples(SENSOR *spec, SENSOR *th, INPUT_PARS *pars)
   total = 0.0;  
   count = 0.0;
   for(i=0; i<th->nrows; i++) {
-	printf("\n\tstart row = %d", pars->s_row);
+	printf("\n\tend row = %d", pars->e_row);
+	printf("\n\tend col = %d", pars->e_col);
     if(i < pars->s_row || i > pars->e_row) continue;
     /* load lines to memory to compute mean values */
     for(m=i*scale; m<(i+1)*scale; m++) {
