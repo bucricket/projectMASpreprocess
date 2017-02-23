@@ -131,7 +131,7 @@ int savePureSamples(SENSOR *spec, SENSOR *th, INPUT_PARS *pars)
   total = 0.0;  
   count = 0.0;
   for(i=0; i<th->nrows; i++) {
-
+	printf("\n\tstart row = %d", pars->s_row);
     if(i < pars->s_row || i > pars->e_row) continue;
     /* load lines to memory to compute mean values */
     for(m=i*scale; m<(i+1)*scale; m++) {
@@ -158,7 +158,7 @@ int savePureSamples(SENSOR *spec, SENSOR *th, INPUT_PARS *pars)
 	    for(n=0; n<scale; n++) 
 	      if(j*scale+n < spec->ncols) {
 		sdn = dn[m][j*scale+n][k];
-		printf("\n\tdata value = %d", sdn);
+		
 		if(sdn != spec->fillValue && sdn>=spec->range[0] && sdn<=spec->range[1]) {
 		  sum += sdn;
 		  sum2 += sdn * sdn;
