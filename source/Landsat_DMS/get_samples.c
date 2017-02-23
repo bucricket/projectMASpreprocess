@@ -158,6 +158,7 @@ int savePureSamples(SENSOR *spec, SENSOR *th, INPUT_PARS *pars)
 	    for(n=0; n<scale; n++) 
 	      if(j*scale+n < spec->ncols) {
 		sdn = dn[m][j*scale+n][k];
+		printf("\n\tdata value = %d", sdn)
 		if(sdn != spec->fillValue && sdn>=spec->range[0] && sdn<=spec->range[1]) {
 		  sum += sdn;
 		  sum2 += sdn * sdn;
