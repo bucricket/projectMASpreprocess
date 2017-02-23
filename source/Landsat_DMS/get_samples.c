@@ -145,9 +145,9 @@ int savePureSamples(SENSOR *spec, SENSOR *th, INPUT_PARS *pars)
     for(j=0; j<th->ncols; j++) {
       
       if(j < pars->s_col || j > pars->e_col) continue;
-		printf("\n\tdata = %d", th->fdata[i][j]);
-		printf("\n\range lower = %d", th->range[0]);
-		printf("\n\range upper = %d", th->range[1]);
+		printf("\n\tdata = %f", th->fdata[i][j]);
+		printf("\n\range lower = %f", th->range[0]);
+		printf("\n\range upper = %f", th->range[1]);
       if(th->fdata[i][j]>=th->range[0] && th->fdata[i][j]<=th->range[1]) {
 
 	sd2 = 0.0;
