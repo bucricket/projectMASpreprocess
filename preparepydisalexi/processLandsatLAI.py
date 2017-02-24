@@ -340,7 +340,7 @@ def main():
     print("All done with LAI")
     print("========================================")
     print("==============process LST===============")
-    subprocess.call(["processlst"])
+    subprocess.call(["processlst","%s" % earthLoginUser,"%s" % earthLoginPass])
 
 if __name__ == "__main__":
     try:
