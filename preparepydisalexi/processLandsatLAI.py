@@ -337,7 +337,10 @@ def main():
     #======Clean up folder===============================
     shutil.rmtree(downloadFolder)
     #shutil.rmtree(landsatTemp)
-    print("All done!")
+    print("All done with LAI")
+    print("========================================")
+    print("==============process LST===============")
+    subprocess.call(["processlst"])
 
 if __name__ == "__main__":
     try:
