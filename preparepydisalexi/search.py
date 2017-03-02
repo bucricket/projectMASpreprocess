@@ -180,7 +180,7 @@ class Search(object):
         # Have to manually build the URI to bypass requests URI encoding
         # The api server doesn't accept encoded URIs
 
-        r = requests.get('%s?search=%s&limit=%s' % (self.api_url, search_string, limit))
+        r = requests.get('%s?search=%s&limit=%s' % (self.api_url, search_string, limit), verify=False)
 
         r_dict = json.loads(r.text)
         result = {}
