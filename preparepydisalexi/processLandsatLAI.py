@@ -20,7 +20,7 @@ import getpass
 import keyring
 import json
 from pyproj import Proj
-from .utils import folders
+from .utils import folders,search
 from .Clients import Client
 from .Order import Order
 from .OrderTemplate import OrderTemplate
@@ -57,12 +57,18 @@ def getLandsatData(loc,startDate,endDate,auth):
     #downloader = EspaLandsatLocalDownloader('USGS_downloads')
     
     # find cloud free landsat scenes
-    s = Search()
-    scenes = s.search(lat=loc[0],lon=loc[1],limit = 100, start_date = startDate,end_date=endDate, cloud_max=5)
-    
-    l8_tiles=[]
-    for i in range(len(scenes['results'])):
-        l8_tiles.append(scenes['results'][i]['sceneID'])
+    try:
+        s = Search()
+        scenes = s.search(lat=loc[0],lon=loc[1],limit = 100, start_date = startDate,end_date=endDate, cloud_max=5)
+        l8_tiles=[]
+        for i in range(len(scenes['results'])):
+            l8_tiles.append(scenes['results'][i]['sceneID'])
+    except:
+        sceneIDs = search(loc[0],loc[1],startDate, endDate)
+
+        l8_tiles=[]
+        for i in range(len(sceneIDs)):
+            l8_tiles.append(sceneIDs[i])
         
     # order the data
     order.add_tiles("olitirs8", l8_tiles)
