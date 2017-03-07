@@ -130,8 +130,7 @@ int savePureSamples(SENSOR *spec, SENSOR *th, INPUT_PARS *pars)
 
   total = 0.0;  
   count = 0.0;
-  printf("range[0]=%f",th->range[0]); 
-  printf("range[1]=%f",th->range[1]); 
+
   for(i=0; i<th->nrows; i++) {
 
     if(i < pars->s_row || i > pars->e_row) continue;
