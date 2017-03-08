@@ -141,8 +141,9 @@ int savePureSamples(SENSOR *spec, SENSOR *th, INPUT_PARS *pars)
       for(n=0; n<spec->ncols; n++)
 	for(k=0; k<spec->nbands; k++)
 	  dn[m-i*scale][n][k] = spec->data[k][n];
+	  printf("dn=%f\n", spec->data[k][n]); 
     }
-
+    
     for(j=0; j<th->ncols; j++) {
       
       if(j < pars->s_col || j > pars->e_col) continue;
