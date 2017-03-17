@@ -15,7 +15,6 @@ import pandas as pd
 #from numba import jit
 
 def folders(base):
-    inputDataBase = os.path.join(os.sep,'data','data123','chain','GETD_FINAL')
     dataBase = os.path.join(base,'data')
     landsatDataBase = os.path.join(dataBase,'Landsat-8')
     metBase = os.path.join(dataBase,'MET')
@@ -24,7 +23,6 @@ def folders(base):
     ALEXIbase = os.path.join(dataBase,'ALEXI')
     if not os.path.exists(ALEXIbase):
         os.makedirs(ALEXIbase) 
-    resultsBase = os.path.join(base,'outputs')
     albedoBase = os.path.join(landsatDataBase,'albedo')
     if not os.path.exists(albedoBase):
         os.makedirs(albedoBase)   
@@ -34,11 +32,9 @@ def folders(base):
     landsatSR = os.path.join(landsatDataBase,'SR')
     if not os.path.exists(landsatSR):
         os.makedirs(landsatSR)
+    resultsBase = os.path.join(base,'outputs')
     if not os.path.exists(resultsBase):
         os.makedirs(resultsBase)
-    landsatDN = os.path.join(landsatDataBase,'DN')
-    if not os.path.exists(landsatDN):
-        os.makedirs(landsatDN)
     landsatLC = os.path.join(landsatDataBase,'LC')
     if not os.path.exists(landsatLC):
         os.makedirs(landsatLC)
@@ -48,8 +44,8 @@ def folders(base):
     modisBase = os.path.join(base,'data','MODIS')
     if not os.path.exists(modisBase):
         os.mkdir(modisBase)
-    out = {'dataBase':dataBase,'metBase':metBase,'inputDataBase':inputDataBase,
-    'landsatDN':landsatDN,'ALEXIbase':ALEXIbase,'landsatDataBase':landsatDataBase,
+    out = {'dataBase':dataBase,'metBase':metBase,
+           'ALEXIbase':ALEXIbase,'landsatDataBase':landsatDataBase,
     'resultsBase':resultsBase,'landsatLC':landsatLC,'albedoBase':albedoBase,
     'ndviBase':ndviBase,'landsatSR':landsatSR,'modisBase':modisBase,'landsatLAI':landsatLAI}
     return out

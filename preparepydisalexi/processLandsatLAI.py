@@ -35,10 +35,6 @@ landsatTemp = os.path.join(landsatSR,'temp')
 if not os.path.exists(landsatTemp):
     os.mkdir(landsatTemp)
 
-processData = os.path.join(base,'processData')
-if not os.path.exists(processData ):
-    os.mkdir(processData)
-
 def getLandsatData(loc,startDate,endDate,auth):
     
     
@@ -121,7 +117,6 @@ def latlon2MODtile(lat,lon):
     return int(V),int(H)
     
 def geotiff2envi():   
-    #geotiffConvert = os.path.join(base,'processData','bin','GeoTiff2ENVI')
     geotiffConvert = 'GeoTiff2ENVI'
     bands = ["blue","green","red","nir","swir1","swir2","cloud"]
     l8bands = ["sr_band2","sr_band3","sr_band4","sr_band5","sr_band6","sr_band7","cfmask"] 
@@ -135,7 +130,6 @@ def geotiff2envi():
             subprocess.call(["%s" % geotiffConvert ,"%s" % tifFile, "%s" % datFile])
 
 def sample():    
-    #sample = os.path.join(base,'processData','bin','lndlai_sample')
     sample = 'lndlai_sample'
     bands = ["blue","green","red","nir","swir1","swir2","cloud"]
     l8bands = ["sr_band2","sr_band3","sr_band4","sr_band5","sr_band6","sr_band7","cfmask"] 
@@ -179,7 +173,6 @@ def sample():
             os.remove(os.path.join(laiPath,"slai%s.inp" % i))
             
 def train():    
-    #cubist = os.path.join(base,'processData','bin','cubist')
     cubist = 'cubist'
     landsatFiles = glob.glob(os.path.join(landsatLAI,"*.txt"))
     #======combine input data======================================
@@ -222,7 +215,6 @@ def train():
     subprocess.call(["%s" % cubist , "-f" ,"%s" % filestem, "-r", "%d" % nrules, "-u"])
     
 def compute():    
-    #lndbio = os.path.join(base,'processData','bin','lndlai_compute')
     lndbio ='lndlai_compute'
     bands = ["blue","green","red","nir","swir1","swir2","cloud"]
     l8bands = ["sr_band2","sr_band3","sr_band4","sr_band5","sr_band6","sr_band7","cfmask"] 
@@ -332,8 +324,7 @@ def main():
     # move surface relectance files and estimate get LAI
     downloadFolder = os.path.join(base,'espa_downloads')
     folders2move = glob.glob(os.path.join(downloadFolder ,'*'))
-    L8bands = ["sr_band2","sr_band3","sr_band4","sr_band5","sr_band6","sr_band7","cfmask"]
-    bands = ["blue","green","red","nir","swir1","swir2","cloud"]
+
     for i in range(len(folders2move)):
         inputFN = folders2move[i]
         sceneID = (inputFN).split(os.sep)[-1].split('-')[0]
