@@ -62,36 +62,43 @@ def getLandsatData(loc,startDate,endDate,auth):
         scenes = s.search(lat=loc[0],lon=loc[1],limit = 100, start_date = startDate,end_date=endDate, cloud_max=5)
         l8_tiles=[]
         for i in range(len(scenes['results'])):
-            l8_tiles.append(scenes['results'][i]['sceneID'])
+            path = scenes['results'][i]['path']
+            row = scenes['results'][i]['row']
+            dataFN = os.path.join(landsatSR,"%s%s" %(path,row),"%s.xml" % scenes['results'][i]['sceneID'])
+            if not os.path.exists(dataFN):
+                l8_tiles.append(scenes['results'][i]['sceneID'])
+            else:
+                    files = glob.glob("%s*" % dataFN[:-4])
+                    for file in files:
+                        shutil.copy(file,landsatTemp)
     except:
         sceneIDs = search(loc[0],loc[1],startDate, endDate)
 
         l8_tiles=[]
         for i in range(len(sceneIDs)):
             l8_tiles.append(sceneIDs[i])
+    if l8_tiles:    
+        # order the data
+        order.add_tiles("olitirs8", l8_tiles)
+        #order.add_tiles("etm7", l7_tiles)
+        response = order.submit(client)
         
-    # order the data
-    order.add_tiles("olitirs8", l8_tiles)
-    #order.add_tiles("etm7", l7_tiles)
-    response = order.submit(client)
-    
-    # view the servers whole response. which might indicate an ordering error!
-    print(response) 
-    
-    # assuming there were no order submission errors
-    orderid = response['orderid']
-    
-    # now start the downloader!
-    for download in client.download_order_gen(orderid):
-        print(download)
-    return l8_tiles
-    # download is a tuple with the filepath, and True if the file
-    # is a fresh download.
-    
-    # this is where data pipeline scripts go that can operate
-    # on files as they are downloaded (generator),
-    
-    # See the Client class for further documentation.
+        # view the servers whole response. which might indicate an ordering error!
+        print(response) 
+        
+        # assuming there were no order submission errors
+        orderid = response['orderid']
+        
+        # now start the downloader!
+        for download in client.download_order_gen(orderid):
+            print(download)
+        # download is a tuple with the filepath, and True if the file
+        # is a fresh download.
+        
+        # this is where data pipeline scripts go that can operate
+        # on files as they are downloaded (generator),
+        
+        # See the Client class for further documentation.
 
 def getMODISlai(tiles,product,version,startDate,endDate,auth):    
 
@@ -307,7 +314,7 @@ def main():
         
     
     #start Landsat order process
-    l8_tiles = getLandsatData(loc,startDate,endDate,("%s"% usgsUser,"%s"% usgsPass))
+    getLandsatData(loc,startDate,endDate,("%s"% usgsUser,"%s"% usgsPass))
     
     # find MODIS tiles that cover landsat scene
     # MODIS products   
