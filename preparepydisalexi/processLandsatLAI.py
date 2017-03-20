@@ -60,13 +60,15 @@ def getLandsatData(loc,startDate,endDate,auth):
         for i in range(len(scenes['results'])):
             path = scenes['results'][i]['path']
             row = scenes['results'][i]['row']
-            dataFN = os.path.join(landsatSR,"%s%s" %(path,row),"%s.xml" % scenes['results'][i]['sceneID'])
-            if not os.path.exists(dataFN):
-                l8_tiles.append(scenes['results'][i]['sceneID'])
-            else:
-                files = glob.glob("%s*" % dataFN[:-4])
-                for file in files:
-                    shutil.copy(file,landsatTemp)
+            sceneID = scenes['results'][i]['sceneID']
+            if sceneID.startswith('LC'):
+                dataFN = os.path.join(landsatSR,"%s%s" %(path,row),"%s.xml" % sceneID)
+                if not os.path.exists(dataFN):
+                    l8_tiles.append(sceneID)
+                else:
+                    files = glob.glob("%s*" % dataFN[:-4])
+                    for file in files:
+                        shutil.copy(file,landsatTemp)
     except:
         sceneIDs = search(loc[0],loc[1],startDate, endDate)
 
