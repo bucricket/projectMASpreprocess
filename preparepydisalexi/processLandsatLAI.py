@@ -64,15 +64,16 @@ def getLandsatData(loc,startDate,endDate,auth):
             if not os.path.exists(dataFN):
                 l8_tiles.append(scenes['results'][i]['sceneID'])
             else:
-                    files = glob.glob("%s*" % dataFN[:-4])
-                    for file in files:
-                        shutil.copy(file,landsatTemp)
+                files = glob.glob("%s*" % dataFN[:-4])
+                for file in files:
+                    shutil.copy(file,landsatTemp)
     except:
         sceneIDs = search(loc[0],loc[1],startDate, endDate)
 
         l8_tiles=[]
         for i in range(len(sceneIDs)):
             l8_tiles.append(sceneIDs[i])
+    print l8_tiles
     if l8_tiles:    
         # order the data
         order.add_tiles("olitirs8", l8_tiles)
