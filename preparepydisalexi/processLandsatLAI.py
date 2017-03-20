@@ -68,7 +68,8 @@ def getLandsatData(loc,startDate,endDate,auth):
                 else:
                     files = glob.glob("%s*" % dataFN[:-4])
                     for file in files:
-                        shutil.copy(file,landsatTemp)
+                        os.symlink(os.path.join(landsatSR,"%s%s" % (path,row),file),os.path.join(landsatTemp,file))
+                        #shutil.copy(file,landsatTemp)
     except:
         sceneIDs = search(loc[0],loc[1],startDate, endDate)
 
@@ -340,9 +341,12 @@ def main():
             shutil.copy(filename, folder)  
         for filename in glob.glob(os.path.join(folder, '*.*')):
             shutil.copy(filename, landsatTemp)   
+    if len(folders2move)>0:
+            #======Clean up folder===============================
+            shutil.rmtree(downloadFolder)
+        
     getLAI()
-    #======Clean up folder===============================
-    shutil.rmtree(downloadFolder)
+
     #shutil.rmtree(landsatTemp)
     print("All done with LAI")
     print("========================================")
