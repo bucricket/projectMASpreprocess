@@ -68,7 +68,7 @@ def getLandsatData(loc,startDate,endDate,auth):
                 else:
                     files = glob.glob("%s*" % dataFN[:-4])
                     for file in files:
-                        os.symlink(os.path.join(landsatSR,"%s%s" % (path,row),file),os.path.join(landsatTemp,file))
+                        os.symlink(file,os.path.join(landsatTemp,file.split(os.sep)[-1]))
                         #shutil.copy(file,landsatTemp)
     except:
         sceneIDs = search(loc[0],loc[1],startDate, endDate)
