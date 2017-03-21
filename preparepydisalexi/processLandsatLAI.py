@@ -339,8 +339,7 @@ def main():
     
         for filename in glob.glob(os.path.join(inputFN, '*.*')):
             shutil.copy(filename, folder)  
-        for filename in glob.glob(os.path.join(folder, '*.*')):
-            shutil.copy(filename, landsatTemp)   
+ 
     if len(folders2move)>0:
             #======Clean up folder===============================
             shutil.rmtree(downloadFolder)
