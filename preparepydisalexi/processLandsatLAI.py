@@ -351,7 +351,7 @@ def main():
     print("========================================")
     print("==============process LST===============")
     subprocess.call(["processlst","%s" % earthLoginUser,"%s" % earthLoginPass])
-    shutil.rmtree(landsatTemp)
+    #shutil.rmtree(landsatTemp)
 
 if __name__ == "__main__":
     try:
