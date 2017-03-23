@@ -346,7 +346,6 @@ def main():
         
     getLAI()
 
-    #shutil.rmtree(landsatTemp)
     print("All done with LAI")
     print("========================================")
     print("==============process LST===============")
