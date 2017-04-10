@@ -61,7 +61,7 @@ def getLandsatData(collection,loc,startDate,endDate,auth):
         for i in range(len(scenes['results'])):
             path = scenes['results'][i]['path']
             row = scenes['results'][i]['row']
-            sceneID = scenes['results'][0]['sceneID'][:-1]+'%s' % collection
+            sceneID = scenes['results'][i]['sceneID'][:-1]+'%s' % collection
             if sceneID.startswith('LC'):
                 dataFN = os.path.join(landsatSR,"%s%s" %(path,row),"%s%s.xml" % sceneID)
                 if not os.path.exists(dataFN):
@@ -72,6 +72,7 @@ def getLandsatData(collection,loc,startDate,endDate,auth):
                         os.symlink(file,os.path.join(landsatTemp,file.split(os.sep)[-1]))
                         #shutil.copy(file,landsatTemp)
     except:
+        print("crappy version")
         sceneIDs = search(loc[0],loc[1],startDate, endDate)
 
         l8_tiles=[]
