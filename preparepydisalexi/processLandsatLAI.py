@@ -25,6 +25,7 @@ from .Clients import Client
 from .Order import Order
 from .OrderTemplate import OrderTemplate
 import pycurl
+from .landsatTools import landsat_metadata
 
 base = os.getcwd()
 Folders = folders(base)   
@@ -35,7 +36,7 @@ landsatTemp = os.path.join(landsatSR,'temp')
 if not os.path.exists(landsatTemp):
     os.mkdir(landsatTemp)
 
-def getLandsatData(loc,startDate,endDate,auth):
+def getLandsatData(collection,loc,startDate,endDate,auth):
     
     
     data = {'olitirs8':{"inputs":[],"products": ["sr", "bt","cloud"]},"format":"gtiff",
@@ -60,9 +61,9 @@ def getLandsatData(loc,startDate,endDate,auth):
         for i in range(len(scenes['results'])):
             path = scenes['results'][i]['path']
             row = scenes['results'][i]['row']
-            sceneID = scenes['results'][i]['sceneID']
+            sceneID = scenes['results'][0]['sceneID'][:-1]+'%s' % collection
             if sceneID.startswith('LC'):
-                dataFN = os.path.join(landsatSR,"%s%s" %(path,row),"%s.xml" % sceneID)
+                dataFN = os.path.join(landsatSR,"%s%s" %(path,row),"%s%s.xml" % sceneID)
                 if not os.path.exists(dataFN):
                     l8_tiles.append(sceneID)
                 else:
@@ -120,16 +121,20 @@ def latlon2MODtile(lat,lon):
     V = 18-((y-uly)/tileWidth)
     return int(V),int(H)
     
-def geotiff2envi():   
+def geotiff2envi(collection):   
     geotiffConvert = 'GeoTiff2ENVI'
     bands = ["blue","green","red","nir","swir1","swir2","cloud"]
     l8bands = ["sr_band2","sr_band3","sr_band4","sr_band5","sr_band6","sr_band7","cfmask"] 
     
-    landsatFiles = glob.glob(os.path.join(landsatTemp,"*.xml"))
+    landsatFiles = glob.glob(os.path.join(landsatTemp,"*_MTL.txt"))
     for i in range(len(landsatFiles)):
-        fstem = landsatFiles[i][:-4]
+        
+        fn = landsatFiles[i][:-8]
+        meta = landsat_metadata(landsatFiles[i])
+        fstem = os.sep.join((fn.split(os.sep)[:-1]))+meta.LANDSAT_SCENE_ID
+
         for i in range(len(bands)):
-            tifFile = fstem+"_%s.tif" % l8bands[i]
+            tifFile = fn+"_%s.tif" % l8bands[i]
             datFile = fstem+"_%s.%s.dat" % (l8bands[i],bands[i])
             subprocess.call(["%s" % geotiffConvert ,"%s" % tifFile, "%s" % datFile])
 
@@ -152,7 +157,10 @@ def sample():
         
         modFiles = glob.glob(os.path.join(modisBase,"MCD15A3.A%s%s.*.hdf" % (year,mdoy)))
 
-        fstem = landsatFiles[i][:-4]
+        #fstem = landsatFiles[i][:-4]
+        fn = landsatFiles[i][:-8]
+        meta = landsat_metadata(landsatFiles[i])
+        fstem = os.sep.join((fn.split(os.sep)[:-1]))+meta.LANDSAT_SCENE_ID
         laiPath = landsatLAI
         if not os.path.exists(laiPath):
             os.mkdir(laiPath)
@@ -226,7 +234,10 @@ def compute():
     landsatFiles = glob.glob(os.path.join(landsatTemp,"*.xml"))
     for i in range(len(landsatFiles)):
         sceneID = landsatFiles[i].split(os.sep)[-1][:-4]        
-        fstem = landsatFiles[i][:-4]       
+        #fstem = landsatFiles[i][:-4]       
+        fn = landsatFiles[i][:-8]
+        meta = landsat_metadata(landsatFiles[i])
+        fstem = os.sep.join((fn.split(os.sep)[:-1]))+meta.LANDSAT_SCENE_ID
         # create a folder for lai if it does not exist
         #laiPath = os.path.join(landsatLAI,'%s' % sceneID[9:16])
         laiPath = os.path.join(landsatLAI,'%s' % sceneID[3:9])
@@ -285,7 +296,7 @@ def main():
     loc = [args.lat,args.lon] 
     startDate = args.startDate
     endDate = args.endDate
-
+    collection = '1'
     # set project base directory structure
     #41.18,-96.43
 
@@ -310,7 +321,7 @@ def main():
         
     
     #start Landsat order process
-    getLandsatData(loc,startDate,endDate,("%s"% usgsUser,"%s"% usgsPass))
+    getLandsatData(collection,loc,startDate,endDate,("%s"% usgsUser,"%s"% usgsPass))
     
     # find MODIS tiles that cover landsat scene
     # MODIS products   
@@ -331,7 +342,10 @@ def main():
 
     for i in range(len(folders2move)):
         inputFN = folders2move[i]
-        sceneID = (inputFN).split(os.sep)[-1].split('-')[0]
+        metFN = glob.glob(os.path.join(inputFN,'*MTL.txt'))[0]
+        meta = landsat_metadata(metFN)
+        #sceneID = (inputFN).split(os.sep)[-1].split('-')[0]
+        sceneID = meta.LANDSAT_SCENE_ID
         scene = sceneID[3:9]
         folder = os.path.join(landsatSR,scene)
         if not os.path.exists(folder):
