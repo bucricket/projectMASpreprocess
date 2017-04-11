@@ -12,6 +12,12 @@ import numpy as np
 import glob
 from osgeo import gdal,osr
 import pandas as pd
+import requests
+import json
+from datetime import datetime
+
+# The current URL hosting the ESPA interfaces has reached a stable version 1.0
+host = 'https://espa.cr.usgs.gov/api/v1/'
 #from numba import jit
 
 def folders(base):
@@ -311,3 +317,48 @@ def search(collection,lat,lon,startDate,endDate):
              (metadata.cloudCover <= 5)].LANDSAT_PRODUCT_ID
     return output.values
 
+def checkOrderCache(auth):
+    # This program checks the last month of orders from ESPA
+    username = auth[0]
+    password = auth[1]
+    def api_request(endpoint, verb='get', json=None, uauth=None):
+        """
+        Here we can see how easy it is to handle calls to a REST API that uses JSON
+        """
+        auth_tup = uauth if uauth else (username, password)
+        response = getattr(requests, verb)(host + endpoint, auth=auth_tup, json=json)
+        return response.json()
+    usr = api_request('user')
+    
+    ordList = api_request('list-orders/%s' % usr['email'])
+    orderID =[]
+    fName = []
+    orderStatus=[]
+    for i in range(len(ordList['orders'])):
+        orderid = ordList['orders'][i]
+        date = orderid.split('-')[1]
+        print date
+        if len(date)>8:
+            continue
+        year = int(date[4:])
+        day = int(date[2:4])
+        month = int(date[:2])
+        dOrder = datetime(year,month,day)
+        deltDate = (datetime.now()-dOrder).days
+        print deltDate
+        if deltDate>30:
+            break
+        resp = api_request('item-status/{0}'.format(orderid))
+        ddd = json.loads(json.dumps(resp))
+        if not ddd['orderid']['%s' % orderid][0]['status']=='purged':
+            for j in range(len(ddd['orderid']['%s' % orderid])):
+                fname = ddd['orderid']['%s' % orderid][j]['name']
+                status = ddd['orderid']['%s' % orderid][j]['status']
+                orderID.append(orderid)
+                fName.append(fname)
+                orderStatus.append(status)
+                
+    output = {'orderid':orderID,'productID':fName,'status':orderStatus}
+    outDF = pd.DataFrame(output)  
+    
+    return outDF

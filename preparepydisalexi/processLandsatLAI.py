@@ -20,8 +20,9 @@ import getpass
 import keyring
 import json
 from pyproj import Proj
-from .utils import folders,search
+from .utils import folders,search,checkOrderCache
 from .Clients import Client
+from Downloaders import BaseDownloader
 #from .Order import Order
 #from .OrderTemplate import OrderTemplate
 import pycurl
@@ -32,6 +33,7 @@ import requests
 
 # The current URL hosting the ESPA interfaces has reached a stable version 1.0
 host = 'https://espa.cr.usgs.gov/api/v1/'
+timeout=86400
 
 base = os.getcwd()
 Folders = folders(base)   
@@ -128,17 +130,74 @@ def getLandsatData(collection,loc,startDate,endDate,auth):
     #=====search for data=======
     print("Searching...")
     sceneIDs = search(collection,loc[0],loc[1],startDate, endDate)
+    orderedData = checkOrderCache(auth)
     l8_tiles =[]
+    completedOrderedIDs = []
+    notCompletedOrderedIDs = []
+    completedSceneIDs = []
+    notCompletedSceneIDs =[]
     for sceneID in sceneIDs:
         if sceneID.startswith('LC'):
             dataFN = os.path.join(landsatSR,"%s" % sceneID.split('_')[2],"%s_MTL.txt" % sceneID)
             if not os.path.exists(dataFN):
-                l8_tiles.append(sceneID)
+                if len(orderedData[(orderedData.productID==sceneID)])>0:
+                    if len(orderedData[(orderedData.productID==sceneID) & (orderedData.status=='completed')]['orderid'])>0:
+                        completedOrderedIDs.append(list(orderedData[(orderedData.productID==sceneID) & (orderedData.status=='completed')]['orderid'])[0])
+                        completedSceneIDs.append(sceneID)
+                    else:
+                        notCompletedOrderedIDs.append(list(orderedData[(orderedData.productID==sceneID) & (orderedData.status=='oncache')]['orderid'])[0])
+                        notCompletedSceneIDs.append(sceneID)
+                else:
+                    l8_tiles.append(sceneID)
             else:
                 files = glob.glob("%s*" % dataFN[:-4])
                 for file in files:
                     os.symlink(file,os.path.join(landsatTemp,file.split(os.sep)[-1]))
-    print("Ordering...")
+                    
+    if completedOrderedIDs:
+        print("downloading completed existing orders...")
+        i = 0
+        for orderid in completedOrderedIDs:
+            i+=1
+            sceneID = completedSceneIDs[i]
+            resp = api_request('item-status/{0}'.format(orderid))
+            for item in resp['orderid'][orderid]:
+                if item.get('name')==sceneID:
+                    url = item.get('product_dload_url')
+                    complete = False
+                    reached_timeout = False
+                    starttime = datetime.now()
+                    while not complete and not reached_timeout:
+                        downloader = BaseDownloader('espa_downloads')
+                        elapsed_time = (datetime.now() - starttime).seconds
+                        reached_timeout = elapsed_time > timeout
+                        print("Elapsed time is {0}m".format(elapsed_time / 60.0))
+                        downloader.download(url)
+                        if os.path.exists(os.path.join(os.getcwd,'espa_downloads',url.split(os.sep)[-1][:-7])):
+                            complete = True
+                        
+    if notCompletedOrderedIDs:
+        print("waiting for cached existing orders...")
+        for orderid in notCompletedOrderedIDs:
+            i+=1
+            sceneID = notCompletedSceneIDs[i]
+            resp = api_request('item-status/{0}'.format(orderid))
+            for item in resp['orderid'][orderid]:
+                if item.get('name')==sceneID:
+                    url = item.get('product_dload_url')
+                    complete = False
+                    reached_timeout = False
+                    starttime = datetime.now()
+                    while not complete and not reached_timeout:
+                        downloader = BaseDownloader('espa_downloads')
+                        elapsed_time = (datetime.now() - starttime).seconds
+                        reached_timeout = elapsed_time > timeout
+                        print("Elapsed time is {0}m".format(elapsed_time / 60.0))
+                        downloader.download(url)
+                        if os.path.exists(os.path.join(os.getcwd,'espa_downloads',url.split(os.sep)[-1][:-7])):
+                            complete = True
+        
+    print("Ordering new data...")
     if l8_tiles:
         #========setup order=========
         order = api_request('available-products', verb='post', json=dict(inputs=l8_tiles))
