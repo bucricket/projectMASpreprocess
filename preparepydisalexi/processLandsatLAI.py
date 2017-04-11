@@ -14,7 +14,7 @@ import subprocess
 import glob
 import shutil
 import pandas as pd
-import datetime
+from datetime import datetime
 import argparse
 import getpass
 import keyring
