@@ -337,7 +337,6 @@ def checkOrderCache(auth):
     for i in range(len(ordList['orders'])):
         orderid = ordList['orders'][i]
         date = orderid.split('-')[1]
-        print date
         if len(date)>8:
             continue
         year = int(date[4:])
@@ -345,7 +344,6 @@ def checkOrderCache(auth):
         month = int(date[:2])
         dOrder = datetime(year,month,day)
         deltDate = (datetime.now()-dOrder).days
-        print deltDate
         if deltDate>30:
             break
         resp = api_request('item-status/{0}'.format(orderid))

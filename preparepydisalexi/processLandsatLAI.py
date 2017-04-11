@@ -178,6 +178,7 @@ def getLandsatData(collection,loc,startDate,endDate,auth):
                         
     if notCompletedOrderedIDs:
         print("waiting for cached existing orders...")
+        i = 0
         for orderid in notCompletedOrderedIDs:
             i+=1
             sceneID = notCompletedSceneIDs[i]
