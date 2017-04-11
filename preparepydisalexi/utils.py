@@ -292,13 +292,22 @@ class RasterError(Exception):
     """Custom exception for errors during raster processing in Pygaarst"""
     pass
 
-def search(lat,lon,startDate, endDate):
+def search(collection,lat,lon,startDate,endDate):
     # this is a landsat-util work around when it fails
-    metadataUrl = 'https://landsat.usgs.gov/landsat/metadata_service/bulk_metadata_files/LANDSAT_8.csv'
+    if collection==0:
+        metadataUrl = 'https://landsat.usgs.gov/landsat/metadata_service/bulk_metadata_files/LANDSAT_8.csv'
+    else:
+        metadataUrl = 'https://landsat.usgs.gov/landsat/metadata_service/bulk_metadata_files/LANDSAT_8_C1.csv'
     metadata= pd.read_csv(metadataUrl)
-    
-    output = metadata[(metadata.acquisitionDate >= startDate) & (metadata.acquisitionDate < endDate) & 
-         (metadata.upperLeftCornerLatitude > lat ) & (metadata.upperLeftCornerLongitude < lon )& 
-         (metadata.lowerRightCornerLatitude < lat ) & (metadata.lowerRightCornerLongitude > lon)  & 
-         (metadata.cloudCover <= 5)].sceneID
+    if collection==0:
+        output = metadata[(metadata.acquisitionDate >= startDate) & (metadata.acquisitionDate < endDate) & 
+             (metadata.upperLeftCornerLatitude > lat ) & (metadata.upperLeftCornerLongitude < lon )& 
+             (metadata.lowerRightCornerLatitude < lat ) & (metadata.lowerRightCornerLongitude > lon)  & 
+             (metadata.cloudCover <= 5)].sceneID
+    else:
+        output = metadata[(metadata.acquisitionDate >= startDate) & (metadata.acquisitionDate < endDate) & 
+             (metadata.upperLeftCornerLatitude > lat ) & (metadata.upperLeftCornerLongitude < lon )& 
+             (metadata.lowerRightCornerLatitude < lat ) & (metadata.lowerRightCornerLongitude > lon)  & 
+             (metadata.cloudCover <= 5)].LANDSAT_PRODUCT_ID
     return output.values
+

@@ -8,7 +8,7 @@ Created on Thu Dec  1 13:50:04 2016
 """
 #python
 
-from .search import Search
+#from .search import Search
 import os
 import subprocess
 import glob
@@ -22,10 +22,16 @@ import json
 from pyproj import Proj
 from .utils import folders,search
 from .Clients import Client
-from .Order import Order
-from .OrderTemplate import OrderTemplate
+#from .Order import Order
+#from .OrderTemplate import OrderTemplate
 import pycurl
 from .landsatTools import landsat_metadata
+import requests
+#import json
+#import getpass
+
+# The current URL hosting the ESPA interfaces has reached a stable version 1.0
+host = 'https://espa.cr.usgs.gov/api/v1/'
 
 base = os.getcwd()
 Folders = folders(base)   
@@ -36,72 +42,118 @@ landsatTemp = os.path.join(landsatSR,'temp')
 if not os.path.exists(landsatTemp):
     os.mkdir(landsatTemp)
 
+#def getLandsatData(collection,loc,startDate,endDate,auth):
+#    
+#    
+#    data = {'olitirs8':{"inputs":[],"products": ["sr", "bt","cloud"]},"format":"gtiff",
+#        "plot_statistics":False,"note":""}    
+#    template = OrderTemplate('order',template_dir='./')
+#    template.define(data)
+#    template.save()
+#    with open('order.json', 'w') as outfile:  
+#        json.dump(data, outfile)
+#    
+#    # build the various handlers to spec
+#    template = OrderTemplate('template')
+#    template.load(path='./order.json' )
+#    template.load('./order.json' )
+#    order = Order('order')
+#    order = Order('order', note="Lat%dLon%d-%s_%s" %(int(loc[0]),int(loc[1]),startDate,endDate))
+#    client = Client(auth) # will prompt user for username and password if auth argument not supplied
+#    #downloader = EspaLandsatLocalDownloader('USGS_downloads')
+#    
+#    # find cloud free landsat scenes
+#    try:
+#        s = Search()
+#        scenes = s.search(lat=loc[0],lon=loc[1],limit = 100, start_date = startDate,end_date=endDate, cloud_max=5)
+#        l8_tiles=[]
+#        for i in range(len(scenes['results'])):
+#            path = scenes['results'][i]['path']
+#            row = scenes['results'][i]['row']
+#            sceneID = scenes['results'][i]['sceneID'][:-1]+'%s' % collection
+#            if sceneID.startswith('LC'):
+#                dataFN = os.path.join(landsatSR,"%s%s" %(path,row),"%s%s.xml" % sceneID)
+#                if not os.path.exists(dataFN):
+#                    l8_tiles.append(sceneID)
+#                else:
+#                    files = glob.glob("%s*" % dataFN[:-4])
+#                    for file in files:
+#                        os.symlink(file,os.path.join(landsatTemp,file.split(os.sep)[-1]))
+#                        #shutil.copy(file,landsatTemp)
+#    except:
+#        print("crappy version")
+#        sceneIDs = search(loc[0],loc[1],startDate, endDate)
+#
+#        l8_tiles=[]
+#        for i in range(len(sceneIDs)):
+#            l8_tiles.append(sceneIDs[i])
+#    print l8_tiles
+#    if l8_tiles:    
+#        # order the data
+#        order.add_tiles("olitirs8", l8_tiles)
+#        #order.add_tiles("etm7", l7_tiles)
+#        response = order.submit(client)
+#        
+#        # view the servers whole response. which might indicate an ordering error!
+#        print(response) 
+#        
+#        # assuming there were no order submission errors
+#        orderid = response['orderid']
+#        
+#        # now start the downloader!
+#        for download in client.download_order_gen(orderid):
+#            print(download)
+#        # download is a tuple with the filepath, and True if the file
+#        # is a fresh download.
+#        
+#        # this is where data pipeline scripts go that can operate
+#        # on files as they are downloaded (generator),
+#        
+#        # See the Client class for further documentation.
+
 def getLandsatData(collection,loc,startDate,endDate,auth):
-    
-    
-    data = {'olitirs8':{"inputs":[],"products": ["sr", "bt","cloud"]},"format":"gtiff",
-        "plot_statistics":False,"note":""}    
+    username = auth[0]
+    password = auth[1]
+    client = Client(auth)
+    def api_request(endpoint, verb='get', json=None, uauth=None):
+        """
+        Here we can see how easy it is to handle calls to a REST API that uses JSON
+        """
+        auth_tup = uauth if uauth else (username, password)
+        response = getattr(requests, verb)(host + endpoint, auth=auth_tup, json=json)
+        return response.json()
 
-
-    with open('order.json', 'w') as outfile:  
-        json.dump(data, outfile)
-    
-    # build the various handlers to spec
-    template = OrderTemplate('template')
-    template.load(path='./order.json' )
-    order = Order(template, note="Lat%dLon%d-%s_%s" %(int(loc[0]),int(loc[1]),startDate,endDate))
-    client = Client(auth) # will prompt user for username and password if auth argument not supplied
-    #downloader = EspaLandsatLocalDownloader('USGS_downloads')
-    
-    # find cloud free landsat scenes
-    try:
-        s = Search()
-        scenes = s.search(lat=loc[0],lon=loc[1],limit = 100, start_date = startDate,end_date=endDate, cloud_max=5)
-        l8_tiles=[]
-        for i in range(len(scenes['results'])):
-            path = scenes['results'][i]['path']
-            row = scenes['results'][i]['row']
-            sceneID = scenes['results'][i]['sceneID'][:-1]+'%s' % collection
-            if sceneID.startswith('LC'):
-                dataFN = os.path.join(landsatSR,"%s%s" %(path,row),"%s%s.xml" % sceneID)
-                if not os.path.exists(dataFN):
-                    l8_tiles.append(sceneID)
-                else:
-                    files = glob.glob("%s*" % dataFN[:-4])
-                    for file in files:
-                        os.symlink(file,os.path.join(landsatTemp,file.split(os.sep)[-1]))
-                        #shutil.copy(file,landsatTemp)
-    except:
-        print("crappy version")
-        sceneIDs = search(loc[0],loc[1],startDate, endDate)
-
-        l8_tiles=[]
-        for i in range(len(sceneIDs)):
-            l8_tiles.append(sceneIDs[i])
-    print l8_tiles
-    if l8_tiles:    
-        # order the data
-        order.add_tiles("olitirs8", l8_tiles)
-        #order.add_tiles("etm7", l7_tiles)
-        response = order.submit(client)
+    #=====set products=======
+    l8_prods = ['sr','bt','cloud']
+    #=====search for data=======
+    sceneIDs = search(collection,loc[0],loc[1],startDate, endDate)
+    l8_tiles =[]
+    for sceneID in sceneIDs:
+        if sceneID.startswith('LC'):
+            dataFN = os.path.join(landsatSR,"%s" % sceneID.split('_')[2],"%s_MTL.txt" % sceneID)
+            if not os.path.exists(dataFN):
+                l8_tiles.append(sceneID)
+            else:
+                files = glob.glob("%s*" % dataFN[:-4])
+                for file in files:
+                    os.symlink(file,os.path.join(landsatTemp,file.split(os.sep)[-1]))
+    if l8_tiles:
+        #========setup order=========
+        order = api_request('available-products', verb='post', json=dict(inputs=l8_tiles))
+        for sensor in order.keys():
+            if isinstance(order[sensor], dict) and order[sensor].get('inputs'):
+                order[sensor]['products'] = l8_prods
         
-        # view the servers whole response. which might indicate an ordering error!
-        print(response) 
+        order['format'] = 'gtiff'
+        # =======order the data============
+        resp = api_request('order', verb='post', json=order)
+        print(json.dumps(resp, indent=4))
+        orderid = resp['orderid']
         
-        # assuming there were no order submission errors
-        orderid = response['orderid']
-        
-        # now start the downloader!
+        #======Download data=========    
         for download in client.download_order_gen(orderid):
             print(download)
-        # download is a tuple with the filepath, and True if the file
-        # is a fresh download.
-        
-        # this is where data pipeline scripts go that can operate
-        # on files as they are downloaded (generator),
-        
-        # See the Client class for further documentation.
-
+    
 def getMODISlai(tiles,product,version,startDate,endDate,auth):    
 
     subprocess.call(["modis_download.py", "-r", "-U", "%s" % auth[0], "-P", 
@@ -122,7 +174,7 @@ def latlon2MODtile(lat,lon):
     V = 18-((y-uly)/tileWidth)
     return int(V),int(H)
     
-def geotiff2envi(collection):   
+def geotiff2envi():   
     geotiffConvert = 'GeoTiff2ENVI'
     bands = ["blue","green","red","nir","swir1","swir2","cloud"]
     l8bands = ["sr_band2","sr_band3","sr_band4","sr_band5","sr_band6","sr_band7","cfmask"] 
@@ -297,7 +349,7 @@ def main():
     loc = [args.lat,args.lon] 
     startDate = args.startDate
     endDate = args.endDate
-    collection = '1'
+    collection = 1
     # set project base directory structure
     #41.18,-96.43
 
