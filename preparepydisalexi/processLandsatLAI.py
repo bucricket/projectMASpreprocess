@@ -126,6 +126,7 @@ def getLandsatData(collection,loc,startDate,endDate,auth):
     #=====set products=======
     l8_prods = ['sr','bt','cloud']
     #=====search for data=======
+    print("Searching...")
     sceneIDs = search(collection,loc[0],loc[1],startDate, endDate)
     l8_tiles =[]
     for sceneID in sceneIDs:
@@ -137,6 +138,7 @@ def getLandsatData(collection,loc,startDate,endDate,auth):
                 files = glob.glob("%s*" % dataFN[:-4])
                 for file in files:
                     os.symlink(file,os.path.join(landsatTemp,file.split(os.sep)[-1]))
+    print("Ordering...")
     if l8_tiles:
         #========setup order=========
         order = api_request('available-products', verb='post', json=dict(inputs=l8_tiles))
@@ -196,15 +198,22 @@ def sample():
     bands = ["blue","green","red","nir","swir1","swir2","cloud"]
     l8bands = ["sr_band2","sr_band3","sr_band4","sr_band5","sr_band6","sr_band7","cfmask"] 
     
-    landsatFiles = glob.glob(os.path.join(landsatTemp,"*.xml"))
+    landsatFiles = glob.glob(os.path.join(landsatTemp,"*_MTL.txt"))
+    
     for i in range(len(landsatFiles)):
-        sceneID = landsatFiles[i].split(os.sep)[-1][:-4]
+        #sceneID = landsatFiles[i].split(os.sep)[-1][:-4]
+        meta = landsat_metadata(landsatFiles[i])
+        sceneID = meta.LANDSAT_SCENE_ID
+        
         # extract the Landsat doy and year
+        d = meta.DATETIME_OBJ
+        year = d.year
         ldoy = sceneID[13:16]
-        year = int(sceneID[9:13])
+#        year = int(sceneID[9:13])
         # convert to date    
-        dd = datetime.datetime(year, 1, 1) + datetime.timedelta(int(ldoy) - 1)
-        date = '%d-%02d-%02d' % (dd.year,dd.month,dd.day)
+#        dd = datetime.datetime(year, 1, 1) + datetime.timedelta(int(ldoy) - 1)
+#        date = '%d-%02d-%02d' % (dd.year,dd.month,dd.day)
+        date = meta.DATE_ACQUIRED
         # find the 4 day MODIS doy prior to the Landsat doy
         mdoy = int((int((float(ldoy)-1.)/4.)*4.)+1)
         
@@ -212,7 +221,6 @@ def sample():
 
         #fstem = landsatFiles[i][:-4]
         fn = landsatFiles[i][:-8]
-        meta = landsat_metadata(landsatFiles[i])
         fstem = os.sep.join((fn.split(os.sep)[:-1]))+meta.LANDSAT_SCENE_ID
         laiPath = landsatLAI
         if not os.path.exists(laiPath):
@@ -284,12 +292,13 @@ def compute():
     bands = ["blue","green","red","nir","swir1","swir2","cloud"]
     l8bands = ["sr_band2","sr_band3","sr_band4","sr_band5","sr_band6","sr_band7","cfmask"] 
     
-    landsatFiles = glob.glob(os.path.join(landsatTemp,"*.xml"))
+    landsatFiles = glob.glob(os.path.join(landsatTemp,"*_MTL.txt"))
     for i in range(len(landsatFiles)):
-        sceneID = landsatFiles[i].split(os.sep)[-1][:-4]        
+#        sceneID = landsatFiles[i].split(os.sep)[-1][:-4]  
+        meta = landsat_metadata(landsatFiles[i])
+        sceneID = meta.LANDSAT_SCENE_ID
         #fstem = landsatFiles[i][:-4]       
         fn = landsatFiles[i][:-8]
-        meta = landsat_metadata(landsatFiles[i])
         fstem = os.sep.join((fn.split(os.sep)[:-1]))+meta.LANDSAT_SCENE_ID
         # create a folder for lai if it does not exist
         #laiPath = os.path.join(landsatLAI,'%s' % sceneID[9:16])
