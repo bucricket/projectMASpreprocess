@@ -263,7 +263,7 @@ def geotiff2envi():
         
         fn = landsatFiles[i][:-8]
         meta = landsat_metadata(landsatFiles[i])
-        fstem = os.sep.join((fn.split(os.sep)[:-1]))+meta.LANDSAT_SCENE_ID
+        fstem = os.sep.join((fn.split(os.sep)[:-1]),meta.LANDSAT_SCENE_ID)
 
         for i in range(len(bands)):
             tifFile = fn+"_%s.tif" % l8bands[i]
@@ -298,7 +298,7 @@ def sample():
 
         #fstem = landsatFiles[i][:-4]
         fn = landsatFiles[i][:-8]
-        fstem = os.sep.join((fn.split(os.sep)[:-1]))+meta.LANDSAT_SCENE_ID
+        fstem = os.sep.join((fn.split(os.sep)[:-1]),meta.LANDSAT_SCENE_ID)
         laiPath = landsatLAI
         if not os.path.exists(laiPath):
             os.mkdir(laiPath)
@@ -376,7 +376,7 @@ def compute():
         sceneID = meta.LANDSAT_SCENE_ID
         #fstem = landsatFiles[i][:-4]       
         fn = landsatFiles[i][:-8]
-        fstem = os.sep.join((fn.split(os.sep)[:-1]))+meta.LANDSAT_SCENE_ID
+        fstem = os.sep.join((fn.split(os.sep)[:-1]),meta.LANDSAT_SCENE_ID)
         # create a folder for lai if it does not exist
         #laiPath = os.path.join(landsatLAI,'%s' % sceneID[9:16])
         laiPath = os.path.join(landsatLAI,'%s' % sceneID[3:9])
