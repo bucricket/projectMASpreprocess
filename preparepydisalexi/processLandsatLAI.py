@@ -133,7 +133,7 @@ def getLandsatData(collection,loc,startDate,endDate,auth,cloud):
     l8_prods = ['sr','bt','cloud']
     #=====search for data=======
     print("Searching...")
-    sceneIDs = search(collection,loc[0],loc[1],startDate, endDate,cloud)
+    sceneIDs = search(collection,loc[0],loc[1],startDate,endDate,cloud)
     orderedData = checkOrderCache(auth)
     l8_tiles =[]
     completedOrderedIDs = []
@@ -494,6 +494,8 @@ def main():
     
         for filename in glob.glob(os.path.join(inputFN, '*.*')):
             shutil.copy(filename, folder)  
+            os.symlink(os.path.join(folder,filename.split(os.sep)[-1]),
+            os.path.join(landsatTemp,filename.split(os.sep)[-1]))
  
     if len(folders2move)>0:
             #======Clean up folder===============================
