@@ -117,7 +117,7 @@ if not os.path.exists(landsatTemp):
 #        
 #        # See the Client class for further documentation.
 
-def getLandsatData(collection,loc,startDate,endDate,auth):
+def getLandsatData(collection,loc,startDate,endDate,auth,cloud):
     username = auth[0]
     password = auth[1]
     client = Client(auth)
@@ -133,7 +133,7 @@ def getLandsatData(collection,loc,startDate,endDate,auth):
     l8_prods = ['sr','bt','cloud']
     #=====search for data=======
     print("Searching...")
-    sceneIDs = search(collection,loc[0],loc[1],startDate, endDate)
+    sceneIDs = search(collection,loc[0],loc[1],startDate, endDate,cloud)
     orderedData = checkOrderCache(auth)
     l8_tiles =[]
     completedOrderedIDs = []
@@ -157,6 +157,22 @@ def getLandsatData(collection,loc,startDate,endDate,auth):
                 files = glob.glob("%s*" % dataFN[:-4])
                 for file in files:
                     os.symlink(file,os.path.join(landsatTemp,file.split(os.sep)[-1]))
+
+
+    
+    if l8_tiles:
+        print("Ordering new data...")
+        #========setup order=========
+        order = api_request('available-products', verb='post', json=dict(inputs=l8_tiles))
+        for sensor in order.keys():
+            if isinstance(order[sensor], dict) and order[sensor].get('inputs'):
+                order[sensor]['products'] = l8_prods
+        
+        order['format'] = 'gtiff'
+        # =======order the data============
+        resp = api_request('order', verb='post', json=order)
+        print(json.dumps(resp, indent=4))
+        orderidNew = resp['orderid']
                     
     if completedOrderedIDs:
         print("downloading completed existing orders...")
@@ -210,24 +226,11 @@ def getLandsatData(collection,loc,startDate,endDate,auth):
                         
                         if not complete:
                             sleep(300)
-                        
-        
-    print("Ordering new data...")
+
     if l8_tiles:
-        #========setup order=========
-        order = api_request('available-products', verb='post', json=dict(inputs=l8_tiles))
-        for sensor in order.keys():
-            if isinstance(order[sensor], dict) and order[sensor].get('inputs'):
-                order[sensor]['products'] = l8_prods
-        
-        order['format'] = 'gtiff'
-        # =======order the data============
-        resp = api_request('order', verb='post', json=order)
-        print(json.dumps(resp, indent=4))
-        orderid = resp['orderid']
-        
+        print("Download new data...")       
         #======Download data=========    
-        for download in client.download_order_gen(orderid):
+        for download in client.download_order_gen(orderidNew):
             print(download)
     
 def getMODISlai(tiles,product,version,startDate,endDate,auth):    
@@ -427,11 +430,13 @@ def main():
     parser.add_argument("lon", type=float, help="longitude")
     parser.add_argument("startDate", type=str, help="Start date yyyy-mm-dd")
     parser.add_argument("endDate", type=str, help="Start date yyyy-mm-dd")
+    parser.add_argument("cloud", type=str, help="cloud coverage")
     args = parser.parse_args()
       
     loc = [args.lat,args.lon] 
     startDate = args.startDate
     endDate = args.endDate
+    cloud = args.cloud
     collection = 1
     # set project base directory structure
     #41.18,-96.43
@@ -457,7 +462,7 @@ def main():
         
     
     #start Landsat order process
-    getLandsatData(collection,loc,startDate,endDate,("%s"% usgsUser,"%s"% usgsPass))
+    getLandsatData(collection,loc,startDate,endDate,("%s"% usgsUser,"%s"% usgsPass),cloud)
     
     # find MODIS tiles that cover landsat scene
     # MODIS products   

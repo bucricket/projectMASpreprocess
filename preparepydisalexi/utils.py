@@ -298,7 +298,7 @@ class RasterError(Exception):
     """Custom exception for errors during raster processing in Pygaarst"""
     pass
 
-def search(collection,lat,lon,startDate,endDate):
+def search(collection,lat,lon,startDate,endDate,cloud):
     # this is a landsat-util work around when it fails
     if collection==0:
         metadataUrl = 'https://landsat.usgs.gov/landsat/metadata_service/bulk_metadata_files/LANDSAT_8.csv'
@@ -309,12 +309,12 @@ def search(collection,lat,lon,startDate,endDate):
         output = metadata[(metadata.acquisitionDate >= startDate) & (metadata.acquisitionDate < endDate) & 
              (metadata.upperLeftCornerLatitude > lat ) & (metadata.upperLeftCornerLongitude < lon )& 
              (metadata.lowerRightCornerLatitude < lat ) & (metadata.lowerRightCornerLongitude > lon)  & 
-             (metadata.cloudCover <= 5)].sceneID
+             (metadata.cloudCover <= cloud)].sceneID
     else:
         output = metadata[(metadata.acquisitionDate >= startDate) & (metadata.acquisitionDate < endDate) & 
              (metadata.upperLeftCornerLatitude > lat ) & (metadata.upperLeftCornerLongitude < lon )& 
              (metadata.lowerRightCornerLatitude < lat ) & (metadata.lowerRightCornerLongitude > lon)  & 
-             (metadata.cloudCover <= 5)].LANDSAT_PRODUCT_ID
+             (metadata.cloudCover <= cloud)].LANDSAT_PRODUCT_ID
     return output.values
 
 def checkOrderCache(auth):
