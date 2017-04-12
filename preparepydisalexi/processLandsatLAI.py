@@ -154,7 +154,7 @@ def getLandsatData(collection,loc,startDate,endDate,auth,cloud):
                 else:
                     l8_tiles.append(sceneID)
             else:
-                files = glob.glob("%s*" % dataFN[:-4])
+                files = glob.glob("%s*" % dataFN[:-8])
                 for file in files:
                     os.symlink(file,os.path.join(landsatTemp,file.split(os.sep)[-1]))
 
