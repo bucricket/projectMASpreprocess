@@ -175,7 +175,7 @@ def getLandsatData(collection,loc,startDate,endDate,auth):
                             reached_timeout = elapsed_time > timeout
                             print("Elapsed time is {0}m".format(elapsed_time / 60.0))
                             downloader.download(url)
-                        if os.path.exists(os.path.join(os.getcwd,'espa_downloads',url.split(os.sep)[-1][:-7])):
+                        #if os.path.exists(os.path.join(os.getcwd,'espa_downloads',url.split(os.sep)[-1][:-7])):
                             complete = True
                         if not complete:
                             sleep(300)
@@ -200,7 +200,7 @@ def getLandsatData(collection,loc,startDate,endDate,auth):
                             reached_timeout = elapsed_time > timeout
                             print("Elapsed time is {0}m".format(elapsed_time / 60.0))
                             downloader.download(url)
-                        if os.path.exists(os.path.join(os.getcwd,'espa_downloads',url.split(os.sep)[-1][:-7])):
+                        #if os.path.exists(os.path.join(os.getcwd,'espa_downloads',url.split(os.sep)[-1][:-7])):
                             complete = True
                         if not complete:
                             sleep(300)
