@@ -430,7 +430,7 @@ def main():
     parser.add_argument("lon", type=float, help="longitude")
     parser.add_argument("startDate", type=str, help="Start date yyyy-mm-dd")
     parser.add_argument("endDate", type=str, help="Start date yyyy-mm-dd")
-    parser.add_argument("cloud", type=str, help="cloud coverage")
+    parser.add_argument("cloud", type=int, help="cloud coverage")
     args = parser.parse_args()
       
     loc = [args.lat,args.lon] 
