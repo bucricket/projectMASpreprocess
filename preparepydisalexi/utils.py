@@ -344,7 +344,7 @@ def checkOrderCache(auth):
         month = int(date[:2])
         dOrder = datetime(year,month,day)
         deltDate = (datetime.now()-dOrder).days
-        if deltDate>30:
+        if deltDate>10:
             break
         resp = api_request('item-status/{0}'.format(orderid))
         ddd = json.loads(json.dumps(resp))

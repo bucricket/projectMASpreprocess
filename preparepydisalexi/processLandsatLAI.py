@@ -149,7 +149,7 @@ def getLandsatData(collection,loc,startDate,endDate,auth):
                         completedOrderedIDs.append(list(orderedData[(orderedData.productID==sceneID) & (orderedData.status=='completed')]['orderid'])[0])
                         completedSceneIDs.append(sceneID)
                     else:
-                        notCompletedOrderedIDs.append(list(orderedData[(orderedData.productID==sceneID) & (orderedData.status=='oncache')]['orderid'])[0])
+                        notCompletedOrderedIDs.append(list(orderedData[(orderedData.productID==sceneID) & (orderedData.status=='oncache')]['orderid'])[-1])
                         notCompletedSceneIDs.append(sceneID)
                 else:
                     l8_tiles.append(sceneID)
