@@ -164,14 +164,16 @@ def getLandsatData(collection,loc,startDate,endDate,auth):
         for orderid in completedOrderedIDs:
             i+=1
             sceneID = completedSceneIDs[i]
-            resp = api_request('item-status/{0}'.format(orderid))
-            for item in resp['orderid'][orderid]:
-                if item.get('name')==sceneID:
-                    url = item.get('product_dload_url')
-                    complete = False
-                    reached_timeout = False
-                    starttime = datetime.now()
-                    while not complete and not reached_timeout:
+            complete = False
+            reached_timeout = False
+            starttime = datetime.now()
+            while not complete and not reached_timeout:
+                resp = api_request('item-status/{0}'.format(orderid))
+                for item in resp['orderid'][orderid]:
+                    if item.get('name')==sceneID:
+                        url = item.get('product_dload_url')
+
+                        
                         elapsed_time = (datetime.now() - starttime).seconds
                         reached_timeout = elapsed_time > timeout
                         print("Elapsed time is {0}m".format(elapsed_time / 60.0))
@@ -190,15 +192,15 @@ def getLandsatData(collection,loc,startDate,endDate,auth):
         i = 0
         for orderid in notCompletedOrderedIDs:
             i+=1
+            complete = False
+            reached_timeout = False
+            starttime = datetime.now()
             sceneID = notCompletedSceneIDs[i]
-            resp = api_request('item-status/{0}'.format(orderid))
-            for item in resp['orderid'][orderid]:
-                if item.get('name')==sceneID:
-                    url = item.get('product_dload_url')
-                    complete = False
-                    reached_timeout = False
-                    starttime = datetime.now()
-                    while not complete and not reached_timeout:
+            while not complete and not reached_timeout:
+                resp = api_request('item-status/{0}'.format(orderid))
+                for item in resp['orderid'][orderid]:
+                    if item.get('name')==sceneID:
+                        url = item.get('product_dload_url')
                         elapsed_time = (datetime.now() - starttime).seconds
                         reached_timeout = elapsed_time > timeout
                         print("Elapsed time is {0}m".format(elapsed_time / 60.0))
