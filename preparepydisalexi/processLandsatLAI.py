@@ -29,6 +29,8 @@ import pycurl
 from .landsatTools import landsat_metadata
 import requests
 from time import sleep
+import logging
+logging.getLogger("urllib3").setLevel(logging.WARNING)
 #import json
 #import getpass
 
@@ -173,12 +175,13 @@ def getLandsatData(collection,loc,startDate,endDate,auth):
                             downloader = BaseDownloader('espa_downloads')
                             elapsed_time = (datetime.now() - starttime).seconds
                             reached_timeout = elapsed_time > timeout
-                            print("Elapsed time is {0}m".format(elapsed_time / 60.0))
+                            
                             downloader.download(url)
                         #if os.path.exists(os.path.join(os.getcwd,'espa_downloads',url.split(os.sep)[-1][:-7])):
                             complete = True
                         if not complete:
                             sleep(300)
+                        print("Elapsed time is {0}m".format(elapsed_time / 60.0))
                         
     if notCompletedOrderedIDs:
         print("waiting for cached existing orders...")
@@ -198,12 +201,13 @@ def getLandsatData(collection,loc,startDate,endDate,auth):
                             downloader = BaseDownloader('espa_downloads')
                             elapsed_time = (datetime.now() - starttime).seconds
                             reached_timeout = elapsed_time > timeout
-                            print("Elapsed time is {0}m".format(elapsed_time / 60.0))
+                            
                             downloader.download(url)
                         #if os.path.exists(os.path.join(os.getcwd,'espa_downloads',url.split(os.sep)[-1][:-7])):
                             complete = True
                         if not complete:
                             sleep(300)
+                        print("Elapsed time is {0}m".format(elapsed_time / 60.0))
         
     print("Ordering new data...")
     if l8_tiles:
