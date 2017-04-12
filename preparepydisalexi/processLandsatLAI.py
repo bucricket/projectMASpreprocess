@@ -145,8 +145,8 @@ def getLandsatData(collection,loc,startDate,endDate,auth):
             dataFN = os.path.join(landsatSR,"%s" % sceneID.split('_')[2],"%s_MTL.txt" % sceneID)
             if not os.path.exists(dataFN):
                 if len(orderedData[(orderedData.productID==sceneID)])>0:
-                    if len(orderedData[(orderedData.productID==sceneID) & (orderedData.status=='completed')]['orderid'])>0:
-                        completedOrderedIDs.append(list(orderedData[(orderedData.productID==sceneID) & (orderedData.status=='completed')]['orderid'])[0])
+                    if len(orderedData[(orderedData.productID==sceneID) & (orderedData.status=='complete')]['orderid'])>0:
+                        completedOrderedIDs.append(list(orderedData[(orderedData.productID==sceneID) & (orderedData.status=='complete')]['orderid'])[0])
                         completedSceneIDs.append(sceneID)
                     else:
                         notCompletedOrderedIDs.append(list(orderedData[(orderedData.productID==sceneID) & (orderedData.status=='oncache')]['orderid'])[-1])
@@ -160,7 +160,7 @@ def getLandsatData(collection,loc,startDate,endDate,auth):
                     
     if completedOrderedIDs:
         print("downloading completed existing orders...")
-        i = 0
+        i = -1
         for orderid in completedOrderedIDs:
             i+=1
             sceneID = completedSceneIDs[i]
@@ -171,9 +171,7 @@ def getLandsatData(collection,loc,startDate,endDate,auth):
                 resp = api_request('item-status/{0}'.format(orderid))
                 for item in resp['orderid'][orderid]:
                     if item.get('name')==sceneID:
-                        url = item.get('product_dload_url')
-
-                        
+                        url = item.get('product_dload_url')                      
                         elapsed_time = (datetime.now() - starttime).seconds
                         reached_timeout = elapsed_time > timeout
                         print("Elapsed time is {0}m".format(elapsed_time / 60.0))
@@ -189,7 +187,7 @@ def getLandsatData(collection,loc,startDate,endDate,auth):
                         
     if notCompletedOrderedIDs:
         print("waiting for cached existing orders...")
-        i = 0
+        i = -1
         for orderid in notCompletedOrderedIDs:
             i+=1
             complete = False
