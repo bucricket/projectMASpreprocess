@@ -31,7 +31,7 @@ import requests
 from time import sleep
 import logging
 logging.getLogger("urllib3").setLevel(logging.WARNING)
-logging.basicConfig(level=logging.DEBUG)
+logging.getLogger("urllib3").setLevel(logging.DEBUG)
 #import json
 #import getpass
 
@@ -172,15 +172,15 @@ def getLandsatData(collection,loc,startDate,endDate,auth):
                     reached_timeout = False
                     starttime = datetime.now()
                     while not complete and not reached_timeout:
+                        elapsed_time = (datetime.now() - starttime).seconds
+                        reached_timeout = elapsed_time > timeout
+                        print("Elapsed time is {0}m".format(elapsed_time / 60.0))
                         if len(url)>0:
                             downloader = BaseDownloader('espa_downloads')
-                            elapsed_time = (datetime.now() - starttime).seconds
-                            reached_timeout = elapsed_time > timeout
-                            
                             downloader.download(url)
                         #if os.path.exists(os.path.join(os.getcwd,'espa_downloads',url.split(os.sep)[-1][:-7])):
                             complete = True
-                        print("Elapsed time is {0}m".format(elapsed_time / 60.0))
+                        
                         if not complete:
                             sleep(300)
                         
@@ -199,15 +199,15 @@ def getLandsatData(collection,loc,startDate,endDate,auth):
                     reached_timeout = False
                     starttime = datetime.now()
                     while not complete and not reached_timeout:
+                        elapsed_time = (datetime.now() - starttime).seconds
+                        reached_timeout = elapsed_time > timeout
+                        print("Elapsed time is {0}m".format(elapsed_time / 60.0))
                         if len(url)>0:
-                            downloader = BaseDownloader('espa_downloads')
-                            elapsed_time = (datetime.now() - starttime).seconds
-                            reached_timeout = elapsed_time > timeout
-                            
+                            downloader = BaseDownloader('espa_downloads')                            
                             downloader.download(url)
                         #if os.path.exists(os.path.join(os.getcwd,'espa_downloads',url.split(os.sep)[-1][:-7])):
                             complete = True
-                        print("Elapsed time is {0}m".format(elapsed_time / 60.0))
+                        
                         if not complete:
                             sleep(300)
                         
