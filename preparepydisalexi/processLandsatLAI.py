@@ -156,7 +156,9 @@ def getLandsatData(collection,loc,startDate,endDate,auth,cloud):
             else:
                 files = glob.glob("%s*" % dataFN[:-8])
                 for file in files:
-                    os.symlink(file,os.path.join(landsatTemp,file.split(os.sep)[-1]))
+                    linkedFile = os.path.join(landsatTemp,file.split(os.sep)[-1])
+                    if not os.path.exists(linkedFile):
+                        os.symlink(file,linkedFile)
 
 
     
