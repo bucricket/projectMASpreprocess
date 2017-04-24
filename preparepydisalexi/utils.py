@@ -309,12 +309,12 @@ def search(collection,lat,lon,startDate,endDate,cloud):
         output = metadata[(metadata.acquisitionDate >= startDate) & (metadata.acquisitionDate < endDate) & 
              (metadata.upperLeftCornerLatitude > lat ) & (metadata.upperLeftCornerLongitude < lon )& 
              (metadata.lowerRightCornerLatitude < lat ) & (metadata.lowerRightCornerLongitude > lon)  & 
-             (metadata.cloudCover <= cloud)].sceneID
+             (metadata.cloudCoverFull <= cloud)].sceneID
     else:
         output = metadata[(metadata.acquisitionDate >= startDate) & (metadata.acquisitionDate < endDate) & 
              (metadata.upperLeftCornerLatitude > lat ) & (metadata.upperLeftCornerLongitude < lon )& 
              (metadata.lowerRightCornerLatitude < lat ) & (metadata.lowerRightCornerLongitude > lon)  & 
-             (metadata.cloudCover <= cloud)].LANDSAT_PRODUCT_ID
+             (metadata.cloudCoverFull <= cloud)].LANDSAT_PRODUCT_ID
     return output.values
 
 def checkOrderCache(auth):
