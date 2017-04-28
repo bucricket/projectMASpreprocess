@@ -15,6 +15,7 @@ import pandas as pd
 import requests
 import json
 from datetime import datetime
+import wget
 
 # The current URL hosting the ESPA interfaces has reached a stable version 1.0
 host = 'https://espa.cr.usgs.gov/api/v1/'
@@ -299,12 +300,22 @@ class RasterError(Exception):
     pass
 
 def search(collection,lat,lon,startDate,endDate,cloud):
+    end = datetime.strptime(endDate, '%Y-%m-%I')
     # this is a landsat-util work around when it fails
     if collection==0:
         metadataUrl = 'https://landsat.usgs.gov/landsat/metadata_service/bulk_metadata_files/LANDSAT_8.csv'
     else:
         metadataUrl = 'https://landsat.usgs.gov/landsat/metadata_service/bulk_metadata_files/LANDSAT_8_C1.csv'
-    metadata= pd.read_csv(metadataUrl)
+    fn  = metadataUrl.split(os.sep)[-1]
+    # looking to see if metadata CSV is available and if its up to the date needed
+    if os.path.exists(fn):
+        d = datetime.fromtimestamp(os.path.getmtime(fn))
+        if ((end.year>d.year) and (end.month>d.month) and (end.day>d.day)):
+            wget.download(metadataUrl)
+    else:
+        wget.download(metadataUrl)
+        
+    metadata= pd.read_csv(fn)
     if collection==0:
         output = metadata[(metadata.acquisitionDate >= startDate) & (metadata.acquisitionDate < endDate) & 
              (metadata.upperLeftCornerLatitude > lat ) & (metadata.upperLeftCornerLongitude < lon )& 
