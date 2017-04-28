@@ -10,6 +10,7 @@ Created on Thu Dec  1 13:50:04 2016
 
 #from .search import Search
 import os
+import numpy as np
 import subprocess
 import glob
 import shutil
@@ -133,7 +134,7 @@ def getLandsatData(collection,loc,startDate,endDate,auth,cloud):
     l8_prods = ['sr','bt','cloud']
     #=====search for data=======
     print("Searching...")
-sceneIDs = search(collection,loc[0],loc[1],startDate,endDate,cloud)
+    sceneIDs = search(collection,loc[0],loc[1],startDate,endDate,cloud)
     orderedData = checkOrderCache(auth)
     l8_tiles =[]
     completedOrderedIDs = []
