@@ -1,9 +1,0 @@
-{
-    "olitirs8": {
-        "inputs": [],
-        "products": ["sr", "cloud"]
-    },
-    "format": "gtiff",
-    "plot_statistics": false,
-    "note": ""
-}
