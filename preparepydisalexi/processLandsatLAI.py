@@ -151,7 +151,7 @@ def getLandsatData(collection,loc,startDate,endDate,auth,cloud):
                         completedOrderedIDs.append(list(orderedData[completedTest]['orderid'])[0])
                         completedSceneIDs.append(sceneID)
                     else:
-                        notCompletedOrderedIDs.append(list(orderedData[(completedTest==False)]['orderid'])[-1])
+                        notCompletedOrderedIDs.append(list(orderedData[(orderedData.productID==sceneID)]['orderid'])[-1])
                         notCompletedSceneIDs.append(sceneID)
                 else:
                     l8_tiles.append(sceneID)
