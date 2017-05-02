@@ -300,7 +300,7 @@ class RasterError(Exception):
     pass
 
 def search(collection,lat,lon,startDate,endDate,cloud):
-    end = datetime.strptime(endDate, '%Y-%m-%I')
+    end = datetime.strptime(endDate, '%Y-%m-%d')
     # this is a landsat-util work around when it fails
     if collection==0:
         metadataUrl = 'https://landsat.usgs.gov/landsat/metadata_service/bulk_metadata_files/LANDSAT_8.csv'
