@@ -44,7 +44,7 @@ def extract_archive(source_path, destination_path=None, delete_originals=False):
                     if not is_within_directory(path, member_path):
                         raise Exception("Attempted Path Traversal in Tar File")
             
-                tar.extractall(path, members, numeric_owner) 
+                tar.extractall(path, members, numeric_owner=numeric_owner) 
                 
             
             safe_extract(tfile, set_destpath(destination_path,".tar.gz"))
@@ -76,7 +76,7 @@ def extract_archive(source_path, destination_path=None, delete_originals=False):
                     if not is_within_directory(path, member_path):
                         raise Exception("Attempted Path Traversal in Tar File")
             
-                tar.extractall(path, members, numeric_owner) 
+                tar.extractall(path, members, numeric_owner=numeric_owner) 
                 
             
             safe_extract(tfile, set_destpath(destination_path,".tar"))
